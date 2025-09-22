@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'ELIA';
+  src: url('/fonts/NewA-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.elia-font {
+  font-family: 'ELIA', monospace;
+}
