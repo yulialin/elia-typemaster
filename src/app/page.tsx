@@ -1,95 +1,95 @@
 'use client';
 
 import React, { useState } from 'react';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { AppProvider } from '@/contexts/AppContext';
 import LevelSelector from '@/components/LevelSelector';
-import CharacterExercise from '@/components/CharacterExercise';
-import ExerciseSummary from '@/components/ExerciseSummary';
-import PracticeArena from '@/components/PracticeArena';
-import MindfulnessPrompt from '@/components/MindfulnessPrompt';
+import TypingInterface from '@/components/TypingInterface';
+import LessonSummary from '@/components/LessonSummary';
+import { lessons } from '@/data/eliaMapping';
 
-type AppMode = 'menu' | 'exercise' | 'summary' | 'practice' | 'mindfulness';
+type AppMode = 'menu' | 'lesson' | 'summary';
 
 export default function Home() {
   const [appMode, setAppMode] = useState<AppMode>('menu');
-  const [currentLevel, setCurrentLevel] = useState(1);
-  const [exerciseAccuracy, setExerciseAccuracy] = useState(0);
-  const [incorrectCharacters, setIncorrectCharacters] = useState<string[]>([]);
+  const [currentLessonId, setCurrentLessonId] = useState(1);
+  const [lessonAccuracy, setLessonAccuracy] = useState(0);
+  const [lessonWPM, setLessonWPM] = useState<number | undefined>();
+  const [lessonCPM, setLessonCPM] = useState<number | undefined>();
+  const [isQuizMode, setIsQuizMode] = useState(false);
+  const [startInQuizMode, setStartInQuizMode] = useState(false);
 
-  const handleSelectLevel = (level: number) => {
-    setCurrentLevel(level);
-    setAppMode('mindfulness');
+  const handleSelectLesson = (lessonId: number) => {
+    setCurrentLessonId(lessonId);
+    setStartInQuizMode(false);
+    setAppMode('lesson');
   };
 
-  const handleSelectPractice = (level: number) => {
-    setCurrentLevel(level);
-    setAppMode('practice');
-  };
-
-  const handleBeginExercise = () => {
-    setAppMode('exercise');
-  };
-
-  const handleCompleteExercise = (accuracy: number) => {
-    setExerciseAccuracy(accuracy);
+  const handleCompleteLesson = (accuracy: number, wpm?: number, cpm?: number, isQuiz?: boolean) => {
+    setLessonAccuracy(accuracy);
+    setLessonWPM(wpm);
+    setLessonCPM(cpm);
+    setIsQuizMode(isQuiz || false);
     setAppMode('summary');
   };
 
-  const handleContinue = () => {
-    if (exerciseAccuracy >= 95) {
-      setCurrentLevel(prev => prev + 1);
-    }
-    setAppMode('menu');
+  const handlePracticeAgain = () => {
+    setStartInQuizMode(false);
+    setAppMode('lesson');
   };
 
-  const handleRetry = () => {
-    setAppMode('mindfulness');
+  const handleTakeQuiz = () => {
+    setStartInQuizMode(true);
+    setAppMode('lesson');
+  };
+
+  const handleNextLesson = () => {
+    if (currentLessonId < lessons.length) {
+      setCurrentLessonId(prev => prev + 1);
+      setStartInQuizMode(false);
+      setAppMode('lesson');
+    }
   };
 
   const handleBackToMenu = () => {
     setAppMode('menu');
   };
 
+  const hasNextLesson = currentLessonId < lessons.length;
+
   return (
-    <AppProvider>
-      <div className="min-h-screen">
-        {appMode === 'menu' && (
-          <LevelSelector
-            onSelectLevel={handleSelectLevel}
-            onSelectPractice={handleSelectPractice}
-          />
-        )}
+    <AuthProvider>
+      <AppProvider>
+        <div className="min-h-screen">
+          {appMode === 'menu' && (
+            <LevelSelector onSelectLesson={handleSelectLesson} />
+          )}
 
-        {appMode === 'mindfulness' && (
-          <MindfulnessPrompt onBegin={handleBeginExercise} onBack={handleBackToMenu} />
-        )}
+          {appMode === 'lesson' && (
+            <TypingInterface
+              lessonId={currentLessonId}
+              onComplete={handleCompleteLesson}
+              onBack={handleBackToMenu}
+              startInQuizMode={startInQuizMode}
+            />
+          )}
 
-        {appMode === 'exercise' && (
-          <CharacterExercise
-            level={currentLevel}
-            onComplete={handleCompleteExercise}
-            onBack={handleBackToMenu}
-          />
-        )}
-
-        {appMode === 'summary' && (
-          <ExerciseSummary
-            accuracy={exerciseAccuracy}
-            level={currentLevel}
-            incorrectCharacters={incorrectCharacters}
-            onContinue={handleContinue}
-            onRetry={handleRetry}
-            onBack={handleBackToMenu}
-          />
-        )}
-
-        {appMode === 'practice' && (
-          <PracticeArena
-            level={currentLevel}
-            onBack={handleBackToMenu}
-          />
-        )}
-      </div>
-    </AppProvider>
+          {appMode === 'summary' && (
+            <LessonSummary
+              accuracy={lessonAccuracy}
+              wpm={lessonWPM}
+              cpm={lessonCPM}
+              lessonId={currentLessonId}
+              isQuiz={isQuizMode}
+              onPracticeAgain={handlePracticeAgain}
+              onTakeQuiz={handleTakeQuiz}
+              onNextLesson={handleNextLesson}
+              onBack={handleBackToMenu}
+              hasNextLesson={hasNextLesson}
+            />
+          )}
+        </div>
+      </AppProvider>
+    </AuthProvider>
   );
 }

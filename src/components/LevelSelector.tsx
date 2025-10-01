@@ -2,169 +2,179 @@
 
 import React from 'react';
 import { useApp } from '@/contexts/AppContext';
-import { levels } from '@/data/eliaMapping';
+import { lessons } from '@/data/eliaMapping';
+import ProgressTracker from './ProgressTracker';
+import BadgeDisplay from './BadgeDisplay';
+import UserSettings from './UserSettings';
+import UserProfile from './UserProfile';
+import Logo from './Logo';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface LevelSelectorProps {
-  onSelectLevel: (level: number) => void;
-  onSelectPractice: (level: number) => void;
+  onSelectLesson: (lessonId: number) => void;
 }
 
-export default function LevelSelector({ onSelectLevel, onSelectPractice }: LevelSelectorProps) {
+export default function LevelSelector({ onSelectLesson }: LevelSelectorProps) {
   const { state } = useApp();
-  const { userProgress } = state;
+  const { userProgress, isDataLoading } = state;
+  const { user } = useAuth();
+  const [showSettings, setShowSettings] = React.useState(false);
 
-  const isLevelUnlocked = (levelId: number) => {
-    if (levelId === 1) return true;
-    return userProgress.completedLevels.includes(levelId - 1);
+  const isLessonCompleted = (lessonId: number) => {
+    return userProgress.completedLevels.includes(lessonId);
   };
 
-  const isLevelCompleted = (levelId: number) => {
-    return userProgress.completedLevels.includes(levelId);
+  const getLessonScore = (lessonId: number) => {
+    return userProgress.lessonScores[lessonId];
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            ELIA TypeMaster
-          </h1>
-          <p className="text-lg text-gray-600">
-            Learn to type the ELIA Frames™ alphabet with interactive lessons
-          </p>
-        </div>
+        <div className="mb-8 relative">
+          {/* Top bar with logo and user controls */}
+          <div className="flex justify-between items-start mb-6">
+            <Logo size="large" />
+            <div className="flex items-center space-x-3">
+              <UserProfile />
+              <button
+                onClick={() => setShowSettings(true)}
+                className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg"
+                title="Settings"
+              >
+                ⚙️
+              </button>
+            </div>
+          </div>
 
-        {/* Progress Overview */}
-        <div className="bg-white rounded-lg p-6 mb-8 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Your Progress</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">
-                {userProgress.currentLevel}
-              </div>
-              <div className="text-gray-600">Current Level</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
-                {userProgress.completedLevels.length}
-              </div>
-              <div className="text-gray-600">Completed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">
-                {Object.keys(userProgress.accuracy).length}
-              </div>
-              <div className="text-gray-600">Characters Learned</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">
-                {userProgress.totalAttempts ?
-                  Object.values(userProgress.totalAttempts).reduce((a, b) => a + b, 0) : 0}
-              </div>
-              <div className="text-gray-600">Total Attempts</div>
-            </div>
+          {/* Main title section */}
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">
+              ELIA TypeMaster
+            </h1>
+            <p className="text-lg text-gray-600 mb-2">
+              Interactive Touch-Typing for ELIA Frames™ alphabet
+            </p>
+            {user && (
+              <p className="text-sm text-blue-600 mb-2">
+                Welcome back! Your progress is automatically saved.
+              </p>
+            )}
+            {!user && (
+              <p className="text-sm text-orange-600 mb-2">
+                Sign in to save your progress across devices
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Learning Path */}
+        {/* Loading State */}
+        {isDataLoading && user && (
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center space-x-2 text-blue-600">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+              <span>Loading your progress...</span>
+            </div>
+          </div>
+        )}
+
+        {/* Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+          <div className="lg:col-span-3 order-1">
+            <ProgressTracker />
+          </div>
+          <div className="lg:col-span-1 order-2">
+            <BadgeDisplay />
+          </div>
+        </div>
+
+        {/* Lessons */}
         <div className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-            Module 1: Learning Path
+            Typing Lessons
           </h2>
           <div className="grid gap-4">
-            {levels.map((level) => (
-              <div
-                key={level.id}
-                className={`bg-white rounded-lg p-6 shadow-sm border-2 transition-all ${
-                  isLevelCompleted(level.id)
-                    ? 'border-green-500 bg-green-50'
-                    : isLevelUnlocked(level.id)
-                    ? 'border-blue-500 hover:shadow-md'
-                    : 'border-gray-200 opacity-50'
-                }`}
-              >
+            {lessons.map((lesson) => {
+              const score = getLessonScore(lesson.id);
+              const lessonCompleted = isLessonCompleted(lesson.id);
+
+              return (
+                <div
+                  key={lesson.id}
+                  className={`bg-white rounded-lg p-6 shadow-sm border-2 transition-all hover:shadow-md ${
+                    lessonCompleted
+                      ? 'border-green-500 bg-green-50'
+                      : 'border-gray-200'
+                  }`}
+                >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center mb-2">
                       <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mr-3 ${
-                        isLevelCompleted(level.id)
+                        lessonCompleted
                           ? 'bg-green-500 text-white'
-                          : isLevelUnlocked(level.id)
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-300 text-gray-600'
+                          : 'bg-blue-500 text-white'
                       }`}>
-                        {isLevelCompleted(level.id) ? '✓' : level.id}
+                        {lessonCompleted ? '✓' : lesson.id}
                       </span>
                       <h3 className="text-lg font-semibold text-gray-800">
-                        Level {level.id}: {level.name}
+                        Lesson {lesson.id}: {lesson.name}
                       </h3>
                     </div>
-                    <p className="text-gray-600 mb-2">{level.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {level.characters.map((char) => (
+                    <p className="text-gray-600 mb-2">{lesson.description}</p>
+
+                    {/* Characters */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {lesson.characters.map((char) => (
                         <span
                           key={char}
-                          className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm font-mono"
+                          className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm elia-font"
                         >
                           {char}
                         </span>
                       ))}
                     </div>
-                  </div>
-                  <div className="flex flex-col space-y-2 ml-4">
-                    <button
-                      onClick={() => onSelectLevel(level.id)}
-                      disabled={!isLevelUnlocked(level.id)}
-                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                        isLevelUnlocked(level.id)
-                          ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      }`}
-                    >
-                      {isLevelCompleted(level.id) ? 'Review' : 'Start'}
-                    </button>
-                    {isLevelCompleted(level.id) && (
-                      <button
-                        onClick={() => onSelectPractice(level.id)}
-                        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
-                      >
-                        Practice
-                      </button>
+
+                    {/* Best Score Display */}
+                    {score?.bestScore && (
+                      <div className="text-sm text-gray-600">
+                        <span className="font-medium">Best Score:</span>
+                        <span className="ml-2">{score.bestScore.accuracy}% accuracy</span>
+                        <span className="ml-2">•</span>
+                        <span className="ml-2">{score.bestScore.wpm || Math.round(score.bestScore.cpm / 5)} WPM</span>
+                      </div>
                     )}
+                  </div>
+                  <div className="ml-4">
+                    <button
+                      onClick={() => onSelectLesson(lesson.id)}
+                      className="px-6 py-2 rounded-lg font-medium transition-colors bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      {lessonCompleted ? 'Practice Again' : 'Start Lesson'}
+                    </button>
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        {/* Practice Arena Access */}
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Module 2: Practice Arena
-          </h2>
-          <p className="text-gray-600 mb-4">
-            Build your speed and reinforce learning with word and sentence practice.
+        {/* User Control Message */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+          <h3 className="text-lg font-semibold text-blue-800 mb-2">Freedom & Flexibility</h3>
+          <p className="text-blue-700">
+            Choose any lesson in any order. Practice untimed modules to build confidence,
+            then take the timed quiz when you're ready. You decide when to move on!
           </p>
-          {userProgress.completedLevels.length > 0 ? (
-            <div className="flex space-x-4">
-              {userProgress.completedLevels.map((levelId) => (
-                <button
-                  key={levelId}
-                  onClick={() => onSelectPractice(levelId)}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                >
-                  Practice Level {levelId}
-                </button>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 italic">
-              Complete at least one level in the Learning Path to unlock the Practice Arena.
-            </p>
-          )}
         </div>
+
+        {/* Settings Modal */}
+        {showSettings && (
+          <UserSettings onClose={() => setShowSettings(false)} />
+        )}
+
       </div>
     </div>
   );

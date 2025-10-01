@@ -10,7 +10,8 @@ export interface Level {
   name: string;
   description: string;
   characters: string[];
-  practiceWords: string[];
+  practiceModules: string[];
+  quizText: string;
 }
 
 export interface UserProgress {
@@ -19,6 +20,34 @@ export interface UserProgress {
   accuracy: { [key: string]: number };
   totalAttempts: { [key: string]: number };
   correctAttempts: { [key: string]: number };
+  lessonScores: { [lessonId: number]: LessonScore };
+  badges: string[];
+  settings: UserSettings;
+}
+
+export interface LessonScore {
+  accuracy: number;
+  cpm: number;
+  wpm: number;
+  passed: boolean;
+  attempts: number;
+  bestScore?: {
+    accuracy: number;
+    cpm: number;
+    wpm: number;
+  };
+}
+
+export interface UserSettings {
+  customAccuracyThreshold?: number;
+}
+
+export interface Badge {
+  id: string;
+  title: string;
+  description: string;
+  criteria: string;
+  earned?: boolean;
 }
 
 export interface KeystrokeLog {
@@ -36,4 +65,6 @@ export interface ExerciseResult {
   correctAttempts: number;
   incorrectCharacters: string[];
   duration: number;
+  cpm?: number;
+  wpm?: number;
 }

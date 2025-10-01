@@ -1,108 +1,238 @@
-import { EliaCharacter, Level } from '@/types';
+import { Level } from '@/types';
 
-// The eliaSymbol field contains the regular letter, but when displayed with the 'elia-font' CSS class,
-// it will render in the ELIA Frames™ alphabet using the NewA-Regular.ttf font
-export const eliaCharacterMapping: EliaCharacter[] = [
-  // Level 1: Home Row I (Index & Middle Fingers)
-  { letter: 'F', eliaSymbol: 'F', fingerPosition: 'left-index', level: 1 },
-  { letter: 'J', eliaSymbol: 'J', fingerPosition: 'right-index', level: 1 },
-  { letter: 'D', eliaSymbol: 'D', fingerPosition: 'left-middle', level: 1 },
-  { letter: 'K', eliaSymbol: 'K', fingerPosition: 'right-middle', level: 1 },
-
-  // Level 2: Home Row II (Ring, Pinky & Thumbs)
-  { letter: 'S', eliaSymbol: 'S', fingerPosition: 'left-ring', level: 2 },
-  { letter: 'L', eliaSymbol: 'L', fingerPosition: 'right-ring', level: 2 },
-  { letter: 'A', eliaSymbol: 'A', fingerPosition: 'left-pinky', level: 2 },
-  { letter: 'G', eliaSymbol: 'G', fingerPosition: 'left-index', level: 2 },
-  { letter: 'H', eliaSymbol: 'H', fingerPosition: 'right-index', level: 2 },
-
-  // Level 3: Top Row I (E, I, R, U)
-  { letter: 'E', eliaSymbol: 'E', fingerPosition: 'left-middle', level: 3 },
-  { letter: 'I', eliaSymbol: 'I', fingerPosition: 'right-middle', level: 3 },
-  { letter: 'R', eliaSymbol: 'R', fingerPosition: 'left-index', level: 3 },
-  { letter: 'U', eliaSymbol: 'U', fingerPosition: 'right-index', level: 3 },
-
-  // Level 4: Top Row II (The Rest)
-  { letter: 'T', eliaSymbol: 'T', fingerPosition: 'left-index', level: 4 },
-  { letter: 'Y', eliaSymbol: 'Y', fingerPosition: 'right-index', level: 4 },
-  { letter: 'W', eliaSymbol: 'W', fingerPosition: 'left-ring', level: 4 },
-  { letter: 'O', eliaSymbol: 'O', fingerPosition: 'right-ring', level: 4 },
-  { letter: 'P', eliaSymbol: 'P', fingerPosition: 'right-pinky', level: 4 },
-  { letter: 'Q', eliaSymbol: 'Q', fingerPosition: 'left-pinky', level: 4 },
-
-  // Level 5: Bottom Row I (Common Keys)
-  { letter: 'N', eliaSymbol: 'N', fingerPosition: 'right-index', level: 5 },
-  { letter: 'M', eliaSymbol: 'M', fingerPosition: 'right-index', level: 5 },
-  { letter: 'C', eliaSymbol: 'C', fingerPosition: 'left-middle', level: 5 },
-  { letter: 'V', eliaSymbol: 'V', fingerPosition: 'left-index', level: 5 },
-  { letter: 'B', eliaSymbol: 'B', fingerPosition: 'left-index', level: 5 },
-
-  // Level 6: Bottom Row II (The Edges)
-  { letter: 'X', eliaSymbol: 'X', fingerPosition: 'left-ring', level: 6 },
-  { letter: 'Z', eliaSymbol: 'Z', fingerPosition: 'left-pinky', level: 6 },
-];
-
-export const levels: Level[] = [
+// Lessons based on "ELIA TypeMaster (Revised) 0930" specification
+// Each lesson has optional practice modules followed by a mandatory timed quiz
+export const lessons: Level[] = [
   {
     id: 1,
-    name: "Home Row I",
-    description: "Index & Middle Fingers",
-    characters: ['F', 'J', 'D', 'K'],
-    practiceWords: ['fjd', 'kdj', 'fkf', 'jkj', 'dkd', 'jfj']
+    name: "FJ",
+    description: "Basic finger positioning - F and J keys",
+    characters: ['F', 'J'],
+    practiceModules: [
+      "fff jjj fff jjj fff jjj fff jjj",
+      "fj jf fj jf fj jf fj jf fj jf",
+      "fjf jfj fjf jfj ffj jjf ffj jjf"
+    ],
+    quizText: "Fj JF Fj JF Jf FJ FJ JF FJ JF JF Fj Fj JF Fj Fj Fj"
   },
   {
     id: 2,
-    name: "Home Row II",
-    description: "Ring, Pinky & Thumbs",
-    characters: ['S', 'L', 'A', 'G', 'H'],
-    practiceWords: ['a sad lad', 'a fall flask', 'ask a glad dad', 'gals', 'half']
+    name: "FJ DK",
+    description: "Adding D and K keys",
+    characters: ['F', 'J', 'D', 'K'],
+    practiceModules: [
+      "ddd kkk ddd kkk ddd kkk",
+      "df jk df jk fd kj fd kj",
+      "fkdj fdkj fjkd fkjd dkjf dkfj dfjk"
+    ],
+    quizText: "FJKDJ JKJFK FKFJD DJDKJ JFDJK DKFJD JDKJF FJDKJ"
   },
   {
     id: 3,
-    name: "Top Row I",
-    description: "E, I, R, U",
-    characters: ['E', 'I', 'R', 'U'],
-    practiceWords: ['dear sir', 'like a kite', 'dark fire', 'dire', 'real']
+    name: "FJ DK SL",
+    description: "Adding S and L keys",
+    characters: ['F', 'J', 'D', 'K', 'S', 'L'],
+    practiceModules: [
+      "sss lll sss lll sss lll",
+      "sd fl sd fl sf sl dj kl",
+      "jfkd slfj dksl jdsl kfsj"
+    ],
+    quizText: "FKSLJ LJFKD DSJKL KFLDS SDJLF LFKSJ FSJDK DLFKS"
   },
   {
     id: 4,
-    name: "Top Row II",
-    description: "The Rest",
-    characters: ['T', 'Y', 'W', 'O', 'P', 'Q'],
-    practiceWords: ['water the pot', 'a quick reply', 'two people', 'quote', 'party']
+    name: "FJ DK SL A;",
+    description: "Adding A and semicolon keys",
+    characters: ['F', 'J', 'D', 'K', 'S', 'L', 'A', ';'],
+    practiceModules: [
+      "aaa ;;; aaa ;;; aaa ;;;",
+      "as df jkl; as df jkl;",
+      "a; sl dk fj a; sl dk fj"
+    ],
+    quizText: "F;AKDSLJ JDSFLAK; LA;KFJSD ;SKDALFJ DKSLJA;F"
   },
   {
     id: 5,
-    name: "Bottom Row I",
-    description: "Common Keys",
-    characters: ['N', 'M', 'C', 'V', 'B'],
-    practiceWords: ['very nice', 'come back', 'my brave cat', 'voice', 'cabin']
+    name: "GH",
+    description: "Middle fingers - G and H keys",
+    characters: ['G', 'H'],
+    practiceModules: [
+      "ggg hhh ggg hhh ggg hhh",
+      "fg hj fg hj gf hg gf hg",
+      "fad ghj sad lkh gas hjk"
+    ],
+    quizText: "Sad fhgj Gaj sdhk Jkl ghda Fda shgk Sha gdjk Gda"
   },
   {
     id: 6,
-    name: "Bottom Row II",
-    description: "The Edges",
-    characters: ['X', 'Z'],
-    practiceWords: ['the lazy fox', 'an exact size', 'a bronze prize', 'zero', 'mixed']
+    name: "RT YU",
+    description: "Upper row - R, T, Y, U keys",
+    characters: ['R', 'T', 'Y', 'U'],
+    practiceModules: [
+      "rrr ttt yyy uuu rrr ttt yyy uuu",
+      "fr gt jy hu fr gt jy hu",
+      "art try jug rusty truly draft"
+    ],
+    quizText: "Rasty art trust jars rusty stray truly youth jugs tough"
   },
   {
     id: 7,
-    name: "Full Alphabet Test",
-    description: "Complete mastery test",
-    characters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
-    practiceWords: ['the quick brown fox jumps over the lazy dog', 'pack my box with five dozen liquor jugs']
+    name: "VB NM",
+    description: "Lower row - V, B, N, M keys",
+    characters: ['V', 'B', 'N', 'M'],
+    practiceModules: [
+      "vvv bbb nnn mmm vvv bbb nnn mmm",
+      "fv gb hn jm fv gb hn jm",
+      "van man tub rub vet buy five"
+    ],
+    quizText: "have love find five join kind mine van bag hog jam gum"
+  },
+  {
+    id: 8,
+    name: "VB NM RT YU",
+    description: "Combining lower and upper rows",
+    characters: ['V', 'B', 'N', 'M', 'R', 'T', 'Y', 'U'],
+    practiceModules: [
+      "rtyu vbnm rtyu vbnm",
+      "try rub nut buy vent barn"
+    ],
+    quizText: "tyurbn yrubtn urtybn rtyubm tyurbm yrubtm urtybm"
+  },
+  {
+    id: 9,
+    name: "VB NM RT YU FG HJ",
+    description: "Adding middle finger keys",
+    characters: ['V', 'B', 'N', 'M', 'R', 'T', 'Y', 'U', 'F', 'G', 'H', 'J'],
+    practiceModules: [
+      "fghj rtyu vbnm",
+      "frug just grab hunt very"
+    ],
+    quizText: "ghjryu hjrytu jryutf rtyufh tyrufj yrtufg utryuh"
+  },
+  {
+    id: 10,
+    name: "EI",
+    description: "Middle finger upper row - E and I keys",
+    characters: ['E', 'I'],
+    practiceModules: [
+      "eee iii eee iii eee iii",
+      "ed ik ed ik ed ik de ki de ki",
+      "ride hide find kids ties line like"
+    ],
+    quizText: "drive knife light train thick trace brick child fence"
+  },
+  {
+    id: 11,
+    name: "C,",
+    description: "C and comma keys",
+    characters: ['C', ','],
+    practiceModules: [
+      "ccc ,,, ccc ,,, ccc ,,,",
+      "dec, fed, cat, car, ice,",
+      "arc cab car ice cub cel cut"
+    ],
+    quizText: "clever credit crucial defect device direct concern"
+  },
+  {
+    id: 12,
+    name: "WO",
+    description: "W and O keys",
+    characters: ['W', 'O'],
+    practiceModules: [
+      "www ooo www ooo www ooo",
+      "ws ol ws ol sw lo sw lo",
+      "now low row cow how two work"
+    ],
+    quizText: "blow brow cowl down flow grow jowl know owls rows"
+  },
+  {
+    id: 13,
+    name: "QP",
+    description: "Q and P keys",
+    characters: ['Q', 'P'],
+    practiceModules: [
+      "qqq ppp qqq ppp qqq ppp",
+      "qa pl qa pl aq lp aq lp",
+      "quit quiz plot post pipe plan"
+    ],
+    quizText: "Equal Equip Quack Quaff Quail Quake Qualm Quant"
+  },
+  {
+    id: 14,
+    name: "X.",
+    description: "X and period keys",
+    characters: ['X', '.'],
+    practiceModules: [
+      "xxx ... xxx ... xxx ...",
+      "sx .l sx .l xs l. xs l.",
+      "six fox lax box fix wax."
+    ],
+    quizText: "The quick brown fox jumps over the lazy dog."
+  },
+  {
+    id: 15,
+    name: "Z/",
+    description: "Z and forward slash keys",
+    characters: ['Z', '/'],
+    practiceModules: [
+      "zzz /// zzz /// zzz ///",
+      "za ;/ za ;/ az /; az /;",
+      "zip zap zone zero gaze jazz"
+    ],
+    quizText: "A quick brown fox jumps over the lazy dog."
   }
 ];
 
 export function getEliaSymbol(letter: string): string {
-  const char = eliaCharacterMapping.find(c => c.letter.toLowerCase() === letter.toLowerCase());
-  return char?.eliaSymbol || letter;
+  return letter; // With ELIA font, letters display as ELIA characters
 }
 
-export function getCharactersByLevel(level: number): EliaCharacter[] {
-  return eliaCharacterMapping.filter(char => char.level <= level);
+export function getLessonData(lessonId: number): Level | undefined {
+  return lessons.find(l => l.id === lessonId);
 }
 
-export function getLevelData(level: number): Level | undefined {
-  return levels.find(l => l.id === level);
+export function getCharactersByLevel(level: number): string[] {
+  const lesson = lessons.find(l => l.id === level);
+  return lesson?.characters || [];
 }
+
+// Badge definitions
+export const badges = [
+  {
+    id: 'completionist',
+    title: 'ELIA Completist',
+    description: 'Complete all 15 lessons',
+    criteria: 'Pass all 15 lesson quizzes'
+  },
+  {
+    id: 'steady',
+    title: 'Steady Typist',
+    description: 'Achieve 10 WPM on all lessons',
+    criteria: '10 WPM or higher on all 15 lesson quizzes'
+  },
+  {
+    id: 'swift',
+    title: 'Swift Typist',
+    description: 'Achieve 20 WPM on all lessons',
+    criteria: '20 WPM or higher on all 15 lesson quizzes'
+  },
+  {
+    id: 'velocity',
+    title: 'Velocity Typist',
+    description: 'Achieve 40 WPM on all lessons',
+    criteria: '40 WPM or higher on all 15 lesson quizzes'
+  },
+  {
+    id: 'virtuoso',
+    title: 'ELIA Virtuoso',
+    description: 'Achieve 60 WPM on all lessons',
+    criteria: '60 WPM or higher on all 15 lesson quizzes'
+  }
+];
+
+// Performance criteria
+export const PERFORMANCE_CRITERIA = {
+  DEFAULT_ACCURACY_THRESHOLD: 96,
+  MIN_CPM_THRESHOLD: 20,
+  MIN_WPM_THRESHOLD: 4
+};
