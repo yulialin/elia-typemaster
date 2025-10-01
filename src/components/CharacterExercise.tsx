@@ -23,7 +23,7 @@ export default function CharacterExercise({ level, onComplete, onBack }: Charact
 
   // Initialize exercise characters
   useEffect(() => {
-    const levelCharacters = getCharactersByLevel(level).map(c => c.letter);
+    const levelCharacters = getCharactersByLevel(level);
     const exerciseSet = [...levelCharacters, ...levelCharacters, ...levelCharacters]; // 3x repetition
     setExerciseCharacters(shuffleArray(exerciseSet));
     setStartTime(Date.now());

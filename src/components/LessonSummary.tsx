@@ -86,7 +86,7 @@ export default function LessonSummary({
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-lg w-full text-center">
         {/* Completion Header */}
         <div className="mb-6">
-          <Logo size="small" showText={false} className="mb-4 justify-center" />
+          <Logo size="small" className="mb-4 justify-center" />
           <div className="text-6xl mb-4">
             {isQuiz ? (quizPassed ? '🎉' : '⏰') : '✅'}
           </div>

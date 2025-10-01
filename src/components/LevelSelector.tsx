@@ -166,7 +166,7 @@ export default function LevelSelector({ onSelectLesson }: LevelSelectorProps) {
           <h3 className="text-lg font-semibold text-blue-800 mb-2">Freedom & Flexibility</h3>
           <p className="text-blue-700">
             Choose any lesson in any order. Practice untimed modules to build confidence,
-            then take the timed quiz when you're ready. You decide when to move on!
+            then take the timed quiz when you&apos;re ready. You decide when to move on!
           </p>
         </div>
 

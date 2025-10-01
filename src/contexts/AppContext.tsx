@@ -167,7 +167,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
 
         const allLessonsAtSpeed = newCompletedLevels.every(lessonId => {
           const lessonScore = newLessonScores[lessonId];
-          return lessonScore?.bestScore?.wpm >= wpmThreshold;
+          return (lessonScore?.bestScore?.wpm || 0) >= wpmThreshold;
         });
 
         if (allLessonsAtSpeed && newCompletedLevels.length === totalLessons) {

@@ -73,7 +73,7 @@ export default function UserSettings({ onClose }: UserSettingsProps) {
 
             {customAccuracy > PERFORMANCE_CRITERIA.DEFAULT_ACCURACY_THRESHOLD && (
               <p className="text-sm text-blue-600 mt-2">
-                Great choice! You're setting a higher standard for yourself.
+                Great choice! You&apos;re setting a higher standard for yourself.
               </p>
             )}
           </div>

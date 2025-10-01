@@ -33,14 +33,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       if (isLogin) {
         const { error } = await signIn(email, password)
         if (error) {
-          setError(error.message)
+          setError(typeof error === 'object' && error && 'message' in error ? String(error.message) : 'An error occurred')
         } else {
           onClose()
         }
       } else {
         const { error } = await signUp(email, password)
         if (error) {
-          setError(error.message)
+          setError(typeof error === 'object' && error && 'message' in error ? String(error.message) : 'An error occurred')
         } else {
           setError('')
           alert('Check your email for the confirmation link!')

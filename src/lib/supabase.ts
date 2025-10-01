@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { UserProgress as AppUserProgress } from '@/types'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
@@ -94,7 +95,7 @@ export const getCurrentUser = async () => {
 }
 
 // Progress functions
-export const saveUserProgress = async (userId: string, progress: any) => {
+export const saveUserProgress = async (userId: string, progress: AppUserProgress) => {
   if (!supabase) {
     return { data: null, error: null }
   }

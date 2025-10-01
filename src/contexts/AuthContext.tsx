@@ -7,9 +7,9 @@ import { supabase, signUp, signIn, signOut, getCurrentUser } from '@/lib/supabas
 interface AuthContextType {
   user: User | null
   loading: boolean
-  signUp: (email: string, password: string) => Promise<{ data: any; error: any }>
-  signIn: (email: string, password: string) => Promise<{ data: any; error: any }>
-  signOut: () => Promise<{ error: any }>
+  signUp: (email: string, password: string) => Promise<{ data: unknown; error: unknown }>
+  signIn: (email: string, password: string) => Promise<{ data: unknown; error: unknown }>
+  signOut: () => Promise<{ error: unknown }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)

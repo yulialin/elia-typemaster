@@ -85,7 +85,7 @@ export default function ProgressTracker({ className = '' }: ProgressTrackerProps
         <div className="text-center mt-4">
           {progressPercentage === 100 ? (
             <p className="text-green-600 font-semibold">
-              🎉 Congratulations! You've completed all lessons!
+              🎉 Congratulations! You&apos;ve completed all lessons!
             </p>
           ) : progressPercentage >= 75 ? (
             <p className="text-blue-600 font-semibold">
@@ -93,7 +93,7 @@ export default function ProgressTracker({ className = '' }: ProgressTrackerProps
             </p>
           ) : progressPercentage >= 50 ? (
             <p className="text-purple-600 font-semibold">
-              You're halfway there! Great progress!
+              You&apos;re halfway there! Great progress!
             </p>
           ) : progressPercentage >= 25 ? (
             <p className="text-orange-600 font-semibold">

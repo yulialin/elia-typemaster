@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useApp } from '@/contexts/AppContext';
-import { getEliaSymbol, getLevelData } from '@/data/eliaMapping';
+import { getEliaSymbol, getLessonData } from '@/data/eliaMapping';
 import { calculateWPM } from '@/lib/utils';
 
 interface PracticeArenaProps {
@@ -23,9 +23,9 @@ export default function PracticeArena({ level, onBack }: PracticeArenaProps) {
 
   // Initialize practice text
   useEffect(() => {
-    const levelData = getLevelData(level);
-    if (levelData && levelData.practiceWords.length > 0) {
-      const randomText = levelData.practiceWords[Math.floor(Math.random() * levelData.practiceWords.length)];
+    const levelData = getLessonData(level);
+    if (levelData && levelData.practiceModules.length > 0) {
+      const randomText = levelData.practiceModules[Math.floor(Math.random() * levelData.practiceModules.length)];
       setPracticeText(randomText.toLowerCase());
     }
   }, [level]);
@@ -100,9 +100,9 @@ export default function PracticeArena({ level, onBack }: PracticeArenaProps) {
   }, [handleKeyPress]);
 
   const handleNewText = () => {
-    const levelData = getLevelData(level);
-    if (levelData && levelData.practiceWords.length > 0) {
-      const randomText = levelData.practiceWords[Math.floor(Math.random() * levelData.practiceWords.length)];
+    const levelData = getLessonData(level);
+    if (levelData && levelData.practiceModules.length > 0) {
+      const randomText = levelData.practiceModules[Math.floor(Math.random() * levelData.practiceModules.length)];
       setPracticeText(randomText.toLowerCase());
       setTypedText('');
       setCurrentIndex(0);
