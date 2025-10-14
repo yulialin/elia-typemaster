@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { chapters, getChapter } from '@/data/learnChapters';
 import BookLayout from '@/components/learn/BookLayout';
 import StructuredBookLayout from '@/components/learn/StructuredBookLayout';
@@ -65,9 +66,9 @@ function LearnPageContent() {
       <header className="sticky top-0 z-20 bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <a href="/" className="text-blue-600 hover:text-blue-700 font-semibold">
+            <Link href="/" className="text-blue-600 hover:text-blue-700 font-semibold">
               ← Home
-            </a>
+            </Link>
             <div className="flex items-center gap-3">
               <Logo size="small" className="opacity-80" />
               <h1 className="text-xl font-bold text-gray-900">ELIA Learn</h1>

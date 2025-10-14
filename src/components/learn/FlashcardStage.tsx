@@ -161,7 +161,7 @@ export default function FlashcardStage({ flashcards, onComplete }: FlashcardStag
               ✓ All cards reviewed!
             </div>
             <p className="text-gray-700 mb-4">
-              Great job! You've reviewed all the characters. Ready to test your knowledge?
+              Great job! You&apos;ve reviewed all the characters. Ready to test your knowledge?
             </p>
           </div>
           <button

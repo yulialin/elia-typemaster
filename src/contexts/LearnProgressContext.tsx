@@ -50,7 +50,7 @@ function getInitialProgress(): UserProgress {
           completedChapters.add(chapterId);
         }
       });
-      parsed.completedChapters = Array.from(completedChapters).sort((a, b) => a - b);
+      parsed.completedChapters = Array.from(completedChapters).sort((a, b) => (a as number) - (b as number));
 
       // Debug logging
       console.log('Migration completed:', {
@@ -58,8 +58,8 @@ function getInitialProgress(): UserProgress {
         exerciseProgressKeys: Object.keys(parsed.exerciseProgress || {}),
         exerciseProgressDetails: Object.entries(parsed.exerciseProgress || {}).map(([id, prog]) => ({
           chapterId: id,
-          stage: prog.currentStage,
-          translationCompleted: prog.translationQuizProgress?.completed
+          stage: (prog as ExerciseProgress).currentStage,
+          translationCompleted: (prog as ExerciseProgress).translationQuizProgress?.completed
         }))
       });
 

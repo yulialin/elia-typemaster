@@ -334,7 +334,7 @@ export default function StructuredBookLayout({
                       Chapter Complete!
                     </h2>
                     <p className="text-gray-700 mb-8">
-                      Congratulations! You've completed all exercises for {chapter.title}.
+                      Congratulations! You&apos;ve completed all exercises for {chapter.title}.
                     </p>
                     <div className="flex flex-col gap-4">
                       <button
