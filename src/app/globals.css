@@ -11,6 +11,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-elia: 'ELIA', monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,4 +25,57 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Page turning animation */
+@keyframes pageFlip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(-90deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+
+.page-turning {
+  animation: pageFlip 0.6s ease-in-out;
+}
+
+/* Flashcard flip */
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Smooth transitions */
+.transition-transform {
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Book page shadow effect */
+.book-page {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Exercise feedback animations */
+@keyframes correctPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.correct-answer {
+  animation: correctPulse 0.3s ease-in-out;
+}
+
+/* Mobile-friendly tap targets */
+@media (max-width: 768px) {
+  .option-button {
+    min-height: 60px;
+  }
 }

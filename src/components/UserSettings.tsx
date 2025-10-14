@@ -93,11 +93,11 @@ export default function UserSettings({ onClose }: UserSettingsProps) {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-blue-600">Completed Lessons:</span>
-                <div className="font-semibold">{state.userProgress.completedLevels.length}/15</div>
+                <div className="font-black text-gray-900 text-2xl">{state.userProgress.completedLevels.length}/15</div>
               </div>
               <div>
                 <span className="text-blue-600">Badges Earned:</span>
-                <div className="font-semibold">{state.userProgress.badges.length}/5</div>
+                <div className="font-black text-gray-900 text-2xl">{state.userProgress.badges.length}/5</div>
               </div>
             </div>
           </div>

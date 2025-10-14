@@ -89,6 +89,27 @@ export default function LevelSelector({ onSelectLesson }: LevelSelectorProps) {
           </div>
         </div>
 
+        {/* ELIA Learn Card */}
+        <div className="mb-8">
+          <a
+            href="/learn"
+            className="block bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg p-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
+          >
+            <div className="flex items-center justify-between text-white">
+              <div>
+                <h2 className="text-3xl font-bold mb-2">📚 ELIA Learn</h2>
+                <p className="text-lg opacity-90">
+                  New to ELIA? Start here! Interactive guide to learning the ELIA alphabet.
+                </p>
+                <p className="text-sm mt-2 opacity-80">
+                  Learn characters step-by-step with exercises and instant feedback
+                </p>
+              </div>
+              <div className="text-6xl">→</div>
+            </div>
+          </a>
+        </div>
+
         {/* Lessons */}
         <div className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
