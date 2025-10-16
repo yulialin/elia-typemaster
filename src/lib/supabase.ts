@@ -38,7 +38,7 @@ export interface UserProgress {
   learn_progress?: {
     completedChapters: number[]
     completedExercises: Record<number, string[]>
-    exerciseProgress: Record<number, any>
+    exerciseProgress: Record<number, unknown>
     lastAccessedChapter: number
   }
   created_at: string
@@ -102,7 +102,7 @@ export const getCurrentUser = async () => {
 }
 
 // Progress functions
-export const saveUserProgress = async (userId: string, progress: AppUserProgress, learnProgress?: any) => {
+export const saveUserProgress = async (userId: string, progress: AppUserProgress, learnProgress?: unknown) => {
   if (!supabase) {
     console.log('⚠️ [Supabase] Supabase not configured');
     return { data: null, error: null }
