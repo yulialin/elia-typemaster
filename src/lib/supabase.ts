@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { UserProgress as AppUserProgress } from '@/types'
+import { UserProgress as LearnProgress } from '@/types/learn'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
@@ -34,13 +35,8 @@ export interface UserProgress {
   accuracy: Record<string, number>
   total_attempts: Record<string, number>
   correct_attempts: Record<string, number>
-  // ELIA Learn progress
-  learn_progress?: {
-    completedChapters: number[]
-    completedExercises: Record<number, string[]>
-    exerciseProgress: Record<number, unknown>
-    lastAccessedChapter: number
-  }
+  // ELIA Learn progress (stored as JSONB in database)
+  learn_progress?: LearnProgress
   created_at: string
   updated_at: string
 }
@@ -102,7 +98,7 @@ export const getCurrentUser = async () => {
 }
 
 // Progress functions
-export const saveUserProgress = async (userId: string, progress: AppUserProgress, learnProgress?: unknown) => {
+export const saveUserProgress = async (userId: string, progress: AppUserProgress, learnProgress?: LearnProgress) => {
   if (!supabase) {
     console.log('⚠️ [Supabase] Supabase not configured');
     return { data: null, error: null }
