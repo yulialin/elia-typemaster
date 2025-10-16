@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AuthProvider } from '@/contexts/AuthContext';
-import { AppProvider } from '@/contexts/AppContext';
 import LevelSelector from '@/components/LevelSelector';
 import TypingInterface from '@/components/TypingInterface';
 import LessonSummary from '@/components/LessonSummary';
@@ -58,38 +56,34 @@ export default function Home() {
   const hasNextLesson = currentLessonId < lessons.length;
 
   return (
-    <AuthProvider>
-      <AppProvider>
-        <div className="min-h-screen">
-          {appMode === 'menu' && (
-            <LevelSelector onSelectLesson={handleSelectLesson} />
-          )}
+    <div className="min-h-screen">
+      {appMode === 'menu' && (
+        <LevelSelector onSelectLesson={handleSelectLesson} />
+      )}
 
-          {appMode === 'lesson' && (
-            <TypingInterface
-              lessonId={currentLessonId}
-              onComplete={handleCompleteLesson}
-              onBack={handleBackToMenu}
-              startInQuizMode={startInQuizMode}
-            />
-          )}
+      {appMode === 'lesson' && (
+        <TypingInterface
+          lessonId={currentLessonId}
+          onComplete={handleCompleteLesson}
+          onBack={handleBackToMenu}
+          startInQuizMode={startInQuizMode}
+        />
+      )}
 
-          {appMode === 'summary' && (
-            <LessonSummary
-              accuracy={lessonAccuracy}
-              wpm={lessonWPM}
-              cpm={lessonCPM}
-              lessonId={currentLessonId}
-              isQuiz={isQuizMode}
-              onPracticeAgain={handlePracticeAgain}
-              onTakeQuiz={handleTakeQuiz}
-              onNextLesson={handleNextLesson}
-              onBack={handleBackToMenu}
-              hasNextLesson={hasNextLesson}
-            />
-          )}
-        </div>
-      </AppProvider>
-    </AuthProvider>
+      {appMode === 'summary' && (
+        <LessonSummary
+          accuracy={lessonAccuracy}
+          wpm={lessonWPM}
+          cpm={lessonCPM}
+          lessonId={currentLessonId}
+          isQuiz={isQuizMode}
+          onPracticeAgain={handlePracticeAgain}
+          onTakeQuiz={handleTakeQuiz}
+          onNextLesson={handleNextLesson}
+          onBack={handleBackToMenu}
+          hasNextLesson={hasNextLesson}
+        />
+      )}
+    </div>
   );
 }

@@ -2,12 +2,14 @@
 
 import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
 import { UserProgress, KeystrokeLog, ExerciseResult, LessonScore, UserSettings } from '@/types';
+import { UserProgress as LearnProgress } from '@/types/learn';
 import { lessons } from '@/data/eliaMapping';
 import { useAuth } from './AuthContext';
 import { saveUserProgress, getUserProgress } from '@/lib/supabase';
 
 interface AppState {
   userProgress: UserProgress;
+  learnProgress: LearnProgress;
   currentExercise: {
     level: number;
     promptedCharacter: string | null;
@@ -31,8 +33,9 @@ type AppAction =
   | { type: 'UPDATE_USER_SETTINGS'; payload: Partial<UserSettings> }
   | { type: 'AWARD_BADGE'; payload: string }
   | { type: 'RESET_PROGRESS' }
-  | { type: 'LOAD_USER_DATA'; payload: UserProgress }
-  | { type: 'SET_LOADING'; payload: boolean };
+  | { type: 'LOAD_USER_DATA'; payload: { userProgress: UserProgress; learnProgress?: LearnProgress } }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'UPDATE_LEARN_PROGRESS'; payload: LearnProgress };
 
 const initialState: AppState = {
   userProgress: {
@@ -44,6 +47,12 @@ const initialState: AppState = {
     lessonScores: {},
     badges: [],
     settings: {}
+  },
+  learnProgress: {
+    completedChapters: [],
+    completedExercises: {},
+    exerciseProgress: {},
+    lastAccessedChapter: 1
   },
   currentExercise: {
     level: 1,
@@ -219,7 +228,8 @@ function appReducer(state: AppState, action: AppAction): AppState {
     case 'LOAD_USER_DATA':
       return {
         ...state,
-        userProgress: action.payload,
+        userProgress: action.payload.userProgress,
+        learnProgress: action.payload.learnProgress || state.learnProgress,
         isDataLoading: false
       };
 
@@ -227,6 +237,12 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return {
         ...state,
         isDataLoading: action.payload
+      };
+
+    case 'UPDATE_LEARN_PROGRESS':
+      return {
+        ...state,
+        learnProgress: action.payload
       };
 
     default:
@@ -258,6 +274,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
           }
 
           if (progressData) {
+            console.log('📥 [AppContext] Loading progress from database:', {
+              learn_progress: progressData.learn_progress,
+              completedChapters: progressData.learn_progress?.completedChapters
+            });
 
             // Map database format to app format
             const mappedProgress: UserProgress = {
@@ -271,7 +291,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
               settings: progressData.settings
             };
 
-            dispatch({ type: 'LOAD_USER_DATA', payload: mappedProgress });
+            // Map learn progress if it exists
+            const mappedLearnProgress: LearnProgress | undefined = progressData.learn_progress ? {
+              completedChapters: progressData.learn_progress.completedChapters || [],
+              completedExercises: progressData.learn_progress.completedExercises || {},
+              exerciseProgress: progressData.learn_progress.exerciseProgress || {},
+              lastAccessedChapter: progressData.learn_progress.lastAccessedChapter || 1
+            } : undefined;
+
+            console.log('✅ [AppContext] Mapped learn progress:', mappedLearnProgress);
+
+            dispatch({ type: 'LOAD_USER_DATA', payload: { userProgress: mappedProgress, learnProgress: mappedLearnProgress } });
           } else {
             // New user - use initial state
             dispatch({ type: 'SET_LOADING', payload: false });
@@ -288,13 +318,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
     loadUserData();
   }, [user, authLoading]);
 
-  // Save data to database whenever userProgress changes (debounced)
+  // Save data to database whenever userProgress OR learnProgress changes (debounced)
   useEffect(() => {
     const saveData = async () => {
       if (user && !state.isDataLoading) {
+        console.log('💾 [AppContext] Saving progress to database:', {
+          userId: user.id,
+          learnProgress: state.learnProgress,
+          completedChapters: state.learnProgress.completedChapters
+        });
         try {
-          const result = await saveUserProgress(user.id, state.userProgress);
+          const result = await saveUserProgress(user.id, state.userProgress, state.learnProgress);
+          console.log('✅ [AppContext] Save successful:', result);
         } catch (error) {
+          console.error('❌ [AppContext] Error saving progress:', error);
         }
       }
     };
@@ -302,7 +339,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     // Debounce saves to avoid too many database calls
     const timeoutId = setTimeout(saveData, 1000);
     return () => clearTimeout(timeoutId);
-  }, [state.userProgress, user, state.isDataLoading]);
+  }, [state.userProgress, state.learnProgress, user, state.isDataLoading]);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>
@@ -316,5 +353,19 @@ export function useApp() {
   if (!context) {
     throw new Error('useApp must be used within an AppProvider');
   }
-  return context;
+
+  const { user } = useAuth();
+
+  // Function to update ELIA Learn progress
+  const updateLearnProgress = (learnProgress: LearnProgress) => {
+    context.dispatch({ type: 'UPDATE_LEARN_PROGRESS', payload: learnProgress });
+  };
+
+  return {
+    ...context,
+    user,
+    userProgress: context.state.userProgress,
+    learnProgress: context.state.learnProgress,
+    updateLearnProgress
+  };
 }

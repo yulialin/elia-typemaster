@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
 import { UserProgress, ExerciseStage, ExerciseProgress } from '@/types/learn';
+import { useApp } from '@/contexts/AppContext';
 
 interface LearnProgressContextType {
   progress: UserProgress;
@@ -19,242 +20,179 @@ interface LearnProgressContextType {
 
 const LearnProgressContext = createContext<LearnProgressContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'elia-learn-progress';
-
-function getInitialProgress(): UserProgress {
-  if (typeof window === 'undefined') {
-    return {
-      completedChapters: [],
-      completedExercises: {},
-      exerciseProgress: {},
-      lastAccessedChapter: 1
-    };
-  }
-
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      // Ensure exerciseProgress exists (backwards compatibility)
-      if (!parsed.exerciseProgress) {
-        parsed.exerciseProgress = {};
-      }
-
-      // Migration: Fix completedChapters array by checking exerciseProgress
-      // If a chapter's translationQuiz is completed, it should be in completedChapters
-      const completedChapters = new Set(parsed.completedChapters || []);
-      Object.keys(parsed.exerciseProgress || {}).forEach(chapterIdStr => {
-        const chapterId = parseInt(chapterIdStr);
-        const chapterProgress = parsed.exerciseProgress[chapterIdStr];
-        if (chapterProgress?.translationQuizProgress?.completed || chapterProgress?.currentStage === 'complete') {
-          completedChapters.add(chapterId);
-        }
-      });
-      parsed.completedChapters = Array.from(completedChapters).sort((a, b) => (a as number) - (b as number));
-
-      // Debug logging
-      console.log('Migration completed:', {
-        oldCompleted: parsed.completedChapters,
-        exerciseProgressKeys: Object.keys(parsed.exerciseProgress || {}),
-        exerciseProgressDetails: Object.entries(parsed.exerciseProgress || {}).map(([id, prog]) => ({
-          chapterId: id,
-          stage: (prog as ExerciseProgress).currentStage,
-          translationCompleted: (prog as ExerciseProgress).translationQuizProgress?.completed
-        }))
-      });
-
-      return parsed;
-    }
-  } catch (error) {
-    console.error('Error loading progress:', error);
-  }
-
-  return {
-    completedChapters: [],
-    completedExercises: {},
-    exerciseProgress: {},
-    lastAccessedChapter: 1
-  };
-}
-
 export function LearnProgressProvider({ children }: { children: ReactNode }) {
-  const [progress, setProgress] = useState<UserProgress>(getInitialProgress);
+  const { learnProgress, updateLearnProgress } = useApp();
 
-  // Save progress to localStorage whenever it changes
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-      } catch (error) {
-        console.error('Error saving progress:', error);
-      }
-    }
-  }, [progress]);
+  console.log('🔵 [LearnProgressProvider] Current progress:', {
+    completedChapters: learnProgress.completedChapters,
+    exerciseProgress: Object.keys(learnProgress.exerciseProgress)
+  });
 
   const markChapterComplete = (chapterId: number) => {
-    setProgress(prev => ({
-      ...prev,
-      completedChapters: prev.completedChapters.includes(chapterId)
-        ? prev.completedChapters
-        : [...prev.completedChapters, chapterId]
-    }));
+    console.log('✏️ [LearnProgressProvider] Marking chapter complete:', chapterId);
+    const updatedProgress = {
+      ...learnProgress,
+      completedChapters: learnProgress.completedChapters.includes(chapterId)
+        ? learnProgress.completedChapters
+        : [...learnProgress.completedChapters, chapterId]
+    };
+    console.log('📤 [LearnProgressProvider] Updated progress:', updatedProgress);
+    updateLearnProgress(updatedProgress);
   };
 
   const markExerciseComplete = (chapterId: number, exerciseId: string) => {
-    setProgress(prev => {
-      const chapterExercises = prev.completedExercises[chapterId] || [];
-      if (chapterExercises.includes(exerciseId)) {
-        return prev;
-      }
+    const chapterExercises = learnProgress.completedExercises[chapterId] || [];
+    if (chapterExercises.includes(exerciseId)) {
+      return;
+    }
 
-      return {
-        ...prev,
-        completedExercises: {
-          ...prev.completedExercises,
-          [chapterId]: [...chapterExercises, exerciseId]
-        }
-      };
-    });
+    const updatedProgress = {
+      ...learnProgress,
+      completedExercises: {
+        ...learnProgress.completedExercises,
+        [chapterId]: [...chapterExercises, exerciseId]
+      }
+    };
+    updateLearnProgress(updatedProgress);
   };
 
   const setLastAccessedChapter = (chapterId: number) => {
-    setProgress(prev => ({
-      ...prev,
+    const updatedProgress = {
+      ...learnProgress,
       lastAccessedChapter: chapterId
-    }));
+    };
+    updateLearnProgress(updatedProgress);
   };
 
   const isChapterComplete = (chapterId: number): boolean => {
-    return progress.completedChapters.includes(chapterId);
+    return learnProgress.completedChapters.includes(chapterId);
   };
 
   const isExerciseComplete = (chapterId: number, exerciseId: string): boolean => {
-    const chapterExercises = progress.completedExercises[chapterId] || [];
+    const chapterExercises = learnProgress.completedExercises[chapterId] || [];
     return chapterExercises.includes(exerciseId);
   };
 
-  // New multi-stage methods - memoized to prevent infinite loops
-  const getExerciseProgress = useCallback((chapterId: number): ExerciseProgress | undefined => {
-    return progress.exerciseProgress[chapterId];
-  }, [progress.exerciseProgress]);
+  const getExerciseProgress = (chapterId: number): ExerciseProgress | undefined => {
+    return learnProgress.exerciseProgress[chapterId];
+  };
 
-  const updateExerciseStage = useCallback((chapterId: number, stage: ExerciseStage) => {
-    setProgress(prev => {
-      // Only update if the stage actually changed
-      const currentProgress = prev.exerciseProgress[chapterId];
-      if (currentProgress?.currentStage === stage) {
-        return prev;
+  const updateExerciseStage = (chapterId: number, stage: ExerciseStage) => {
+    const currentProgress = learnProgress.exerciseProgress[chapterId];
+    if (currentProgress?.currentStage === stage) {
+      return;
+    }
+
+    const updatedProgress = {
+      ...learnProgress,
+      exerciseProgress: {
+        ...learnProgress.exerciseProgress,
+        [chapterId]: {
+          ...currentProgress,
+          currentStage: stage,
+          chapterId
+        } as ExerciseProgress
       }
-
-      return {
-        ...prev,
-        exerciseProgress: {
-          ...prev.exerciseProgress,
-          [chapterId]: {
-            ...currentProgress,
-            currentStage: stage,
-            chapterId
-          } as ExerciseProgress
-        }
-      };
-    });
-  }, []);
+    };
+    updateLearnProgress(updatedProgress);
+  };
 
   const markFlashcardViewed = (chapterId: number, flashcardId: string) => {
-    setProgress(prev => {
-      const existingProgress = prev.exerciseProgress[chapterId] || {
-        chapterId,
-        currentStage: 'flashcards' as ExerciseStage,
-        flashcardsReviewed: false,
-        flashcardsViewedIds: [],
-        letterQuizProgress: { questionsCompleted: 0, totalQuestions: 0, completed: false },
-        wordQuizProgress: { questionsCompleted: 0, totalQuestions: 0, completed: false },
-        translationQuizProgress: { wordsCompleted: 0, totalWords: 0, completed: false },
-        completedAt: null
-      };
+    const existingProgress = learnProgress.exerciseProgress[chapterId] || {
+      chapterId,
+      currentStage: 'flashcards' as ExerciseStage,
+      flashcardsReviewed: false,
+      flashcardsViewedIds: [],
+      letterQuizProgress: { questionsCompleted: 0, totalQuestions: 0, completed: false },
+      wordQuizProgress: { questionsCompleted: 0, totalQuestions: 0, completed: false },
+      translationQuizProgress: { wordsCompleted: 0, totalWords: 0, completed: false },
+      completedAt: null
+    };
 
-      const viewedIds = existingProgress.flashcardsViewedIds || [];
-      if (!viewedIds.includes(flashcardId)) {
-        viewedIds.push(flashcardId);
-      }
+    const viewedIds = existingProgress.flashcardsViewedIds || [];
+    if (viewedIds.includes(flashcardId)) {
+      return;
+    }
 
-      return {
-        ...prev,
-        exerciseProgress: {
-          ...prev.exerciseProgress,
-          [chapterId]: {
-            ...existingProgress,
-            flashcardsViewedIds: viewedIds
-          }
+    const updatedProgress = {
+      ...learnProgress,
+      exerciseProgress: {
+        ...learnProgress.exerciseProgress,
+        [chapterId]: {
+          ...existingProgress,
+          flashcardsViewedIds: [...viewedIds, flashcardId]
         }
-      };
-    });
+      }
+    };
+    updateLearnProgress(updatedProgress);
   };
 
   const markStageComplete = (
     chapterId: number,
     stage: 'flashcards' | 'letterQuiz' | 'wordQuiz' | 'translationQuiz'
   ) => {
-    setProgress(prev => {
-      const existingProgress = prev.exerciseProgress[chapterId] || {
-        chapterId,
-        currentStage: 'flashcards' as ExerciseStage,
-        flashcardsReviewed: false,
-        flashcardsViewedIds: [],
-        letterQuizProgress: { questionsCompleted: 0, totalQuestions: 0, completed: false },
-        wordQuizProgress: { questionsCompleted: 0, totalQuestions: 0, completed: false },
-        translationQuizProgress: { wordsCompleted: 0, totalWords: 0, completed: false },
-        completedAt: null
-      };
+    const existingProgress = learnProgress.exerciseProgress[chapterId] || {
+      chapterId,
+      currentStage: 'flashcards' as ExerciseStage,
+      flashcardsReviewed: false,
+      flashcardsViewedIds: [],
+      letterQuizProgress: { questionsCompleted: 0, totalQuestions: 0, completed: false },
+      wordQuizProgress: { questionsCompleted: 0, totalQuestions: 0, completed: false },
+      translationQuizProgress: { wordsCompleted: 0, totalWords: 0, completed: false },
+      completedAt: null
+    };
 
-      const updated = { ...existingProgress };
+    const updated = { ...existingProgress };
 
-      switch (stage) {
-        case 'flashcards':
-          updated.flashcardsReviewed = true;
-          updated.currentStage = 'letter-recognition-quiz';
-          break;
-        case 'letterQuiz':
-          updated.letterQuizProgress = { ...updated.letterQuizProgress, completed: true };
-          updated.currentStage = 'word-recognition-quiz';
-          break;
-        case 'wordQuiz':
-          updated.wordQuizProgress = { ...updated.wordQuizProgress, completed: true };
-          updated.currentStage = 'word-translation-quiz';
-          break;
-        case 'translationQuiz':
-          updated.translationQuizProgress = { ...updated.translationQuizProgress, completed: true };
-          updated.currentStage = 'complete';
-          updated.completedAt = new Date();
-          // Mark chapter as complete - always add to completedChapters
-          const updatedCompletedChapters = prev.completedChapters.includes(chapterId)
-            ? prev.completedChapters
-            : [...prev.completedChapters, chapterId];
+    switch (stage) {
+      case 'flashcards':
+        updated.flashcardsReviewed = true;
+        updated.currentStage = 'letter-recognition-quiz';
+        break;
+      case 'letterQuiz':
+        updated.letterQuizProgress = { ...updated.letterQuizProgress, completed: true };
+        updated.currentStage = 'word-recognition-quiz';
+        break;
+      case 'wordQuiz':
+        updated.wordQuizProgress = { ...updated.wordQuizProgress, completed: true };
+        updated.currentStage = 'word-translation-quiz';
+        break;
+      case 'translationQuiz':
+        updated.translationQuizProgress = { ...updated.translationQuizProgress, completed: true };
+        updated.currentStage = 'complete';
+        updated.completedAt = new Date();
 
-          return {
-            ...prev,
-            completedChapters: updatedCompletedChapters,
-            exerciseProgress: {
-              ...prev.exerciseProgress,
-              [chapterId]: updated
-            }
-          };
+        // Mark chapter as complete
+        const updatedCompletedChapters = learnProgress.completedChapters.includes(chapterId)
+          ? learnProgress.completedChapters
+          : [...learnProgress.completedChapters, chapterId];
+
+        const updatedProgress = {
+          ...learnProgress,
+          completedChapters: updatedCompletedChapters,
+          exerciseProgress: {
+            ...learnProgress.exerciseProgress,
+            [chapterId]: updated
+          }
+        };
+        updateLearnProgress(updatedProgress);
+        return;
+    }
+
+    const updatedProgress = {
+      ...learnProgress,
+      exerciseProgress: {
+        ...learnProgress.exerciseProgress,
+        [chapterId]: updated
       }
-
-      return {
-        ...prev,
-        exerciseProgress: {
-          ...prev.exerciseProgress,
-          [chapterId]: updated
-        }
-      };
-    });
+    };
+    updateLearnProgress(updatedProgress);
   };
 
   return (
     <LearnProgressContext.Provider
       value={{
-        progress,
+        progress: learnProgress,
         markChapterComplete,
         markExerciseComplete,
         setLastAccessedChapter,

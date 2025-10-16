@@ -34,6 +34,13 @@ export interface UserProgress {
   accuracy: Record<string, number>
   total_attempts: Record<string, number>
   correct_attempts: Record<string, number>
+  // ELIA Learn progress
+  learn_progress?: {
+    completedChapters: number[]
+    completedExercises: Record<number, string[]>
+    exerciseProgress: Record<number, any>
+    lastAccessedChapter: number
+  }
   created_at: string
   updated_at: string
 }
@@ -95,10 +102,18 @@ export const getCurrentUser = async () => {
 }
 
 // Progress functions
-export const saveUserProgress = async (userId: string, progress: AppUserProgress) => {
+export const saveUserProgress = async (userId: string, progress: AppUserProgress, learnProgress?: any) => {
   if (!supabase) {
+    console.log('⚠️ [Supabase] Supabase not configured');
     return { data: null, error: null }
   }
+
+  console.log('🗄️ [Supabase] Saving to database:', {
+    userId,
+    learn_progress: learnProgress,
+    completedChapters: learnProgress?.completedChapters
+  });
+
   const { data, error } = await supabase
     .from('user_progress')
     .upsert({
@@ -111,10 +126,18 @@ export const saveUserProgress = async (userId: string, progress: AppUserProgress
       accuracy: progress.accuracy,
       total_attempts: progress.totalAttempts,
       correct_attempts: progress.correctAttempts,
+      learn_progress: learnProgress,
       updated_at: new Date().toISOString()
     }, {
       onConflict: 'user_id'
     })
+
+  if (error) {
+    console.error('❌ [Supabase] Save error:', error);
+  } else {
+    console.log('✅ [Supabase] Save successful');
+  }
+
   return { data, error }
 }
 
