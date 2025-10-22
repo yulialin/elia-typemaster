@@ -270,7 +270,9 @@ export default function TypingInterface({ lessonId, onComplete, onBack, startInQ
             </button>
           </div>
           <div className="text-center">
-            <Logo size="small" className="mb-2 justify-center" />
+            <div className="flex justify-center mb-2">
+              <Logo size="small" />
+            </div>
             <h1 className="text-2xl font-bold text-gray-800">
               Lesson {lessonData.id}: {lessonData.name}
             </h1>

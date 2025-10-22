@@ -207,32 +207,31 @@ export const badges = [
   {
     id: 'steady',
     title: 'Steady Typist',
-    description: 'Achieve 10 WPM on all lessons',
-    criteria: '10 WPM or higher on all 15 lesson quizzes'
+    description: 'Achieve 40 CPM on all lessons',
+    criteria: '40 CPM or higher on all 15 lesson quizzes'
   },
   {
     id: 'swift',
     title: 'Swift Typist',
-    description: 'Achieve 20 WPM on all lessons',
-    criteria: '20 WPM or higher on all 15 lesson quizzes'
+    description: 'Achieve 60 CPM on all lessons',
+    criteria: '60 CPM or higher on all 15 lesson quizzes'
   },
   {
     id: 'velocity',
     title: 'Velocity Typist',
-    description: 'Achieve 40 WPM on all lessons',
-    criteria: '40 WPM or higher on all 15 lesson quizzes'
+    description: 'Achieve 100 CPM on all lessons',
+    criteria: '100 CPM or higher on all 15 lesson quizzes'
   },
   {
     id: 'virtuoso',
     title: 'ELIA Virtuoso',
-    description: 'Achieve 60 WPM on all lessons',
-    criteria: '60 WPM or higher on all 15 lesson quizzes'
+    description: 'Achieve 200 CPM on all lessons',
+    criteria: '200 CPM or higher on all 15 lesson quizzes'
   }
 ];
 
 // Performance criteria
 export const PERFORMANCE_CRITERIA = {
   DEFAULT_ACCURACY_THRESHOLD: 96,
-  MIN_CPM_THRESHOLD: 20,
-  MIN_WPM_THRESHOLD: 4
+  MIN_CPM_THRESHOLD: 25
 };

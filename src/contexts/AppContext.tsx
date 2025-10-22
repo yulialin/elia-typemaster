@@ -19,6 +19,7 @@ interface AppState {
   keystrokeLogs: KeystrokeLog[];
   showMindfulnessPrompt: boolean;
   isDataLoading: boolean;
+  newlyUnlockedBadges: Array<{ id: string; title: string }>;
 }
 
 type AppAction =
@@ -35,7 +36,9 @@ type AppAction =
   | { type: 'RESET_PROGRESS' }
   | { type: 'LOAD_USER_DATA'; payload: { userProgress: UserProgress; learnProgress?: LearnProgress } }
   | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'UPDATE_LEARN_PROGRESS'; payload: LearnProgress };
+  | { type: 'UPDATE_LEARN_PROGRESS'; payload: LearnProgress }
+  | { type: 'CLEAR_BADGE_CELEBRATION' }
+  | { type: 'REPLAY_BADGE_CELEBRATION'; payload: { id: string; title: string } };
 
 const initialState: AppState = {
   userProgress: {
@@ -62,7 +65,8 @@ const initialState: AppState = {
   },
   keystrokeLogs: [],
   showMindfulnessPrompt: true,
-  isDataLoading: false
+  isDataLoading: false,
+  newlyUnlockedBadges: []
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -164,30 +168,47 @@ function appReducer(state: AppState, action: AppAction): AppState {
       // Check for new badges
       const newBadges = [...state.userProgress.badges];
       const totalLessons = lessons.length;
+      const newlyUnlockedBadges: Array<{ id: string; title: string }> = [];
+
+      // Badge titles map
+      const badgeTitles: { [key: string]: string } = {
+        completionist: 'ELIA Completist',
+        steady: 'Steady Typist',
+        swift: 'Swift Typist',
+        velocity: 'Velocity Typist',
+        virtuoso: 'ELIA Virtuoso'
+      };
 
       // Completionist badge
       if (newCompletedLevels.length === totalLessons && !newBadges.includes('completionist')) {
         newBadges.push('completionist');
+        newlyUnlockedBadges.push({ id: 'completionist', title: badgeTitles.completionist });
       }
 
-      // Speed badges - check if user has achieved the WPM on ALL lessons
-      const checkSpeedBadge = (wpmThreshold: number, badgeId: string) => {
+      // Speed badges - check if user has achieved the CPM on ALL lessons
+      const checkSpeedBadge = (cpmThreshold: number, badgeId: string) => {
         if (newBadges.includes(badgeId)) return;
+
+        // Must have completed all 15 lessons first
+        if (newCompletedLevels.length !== totalLessons) return;
 
         const allLessonsAtSpeed = newCompletedLevels.every(lessonId => {
           const lessonScore = newLessonScores[lessonId];
-          return (lessonScore?.bestScore?.wpm || 0) >= wpmThreshold;
+          const cpm = lessonScore?.bestScore?.cpm || 0;
+          return cpm >= cpmThreshold;
         });
 
-        if (allLessonsAtSpeed && newCompletedLevels.length === totalLessons) {
+        if (allLessonsAtSpeed) {
           newBadges.push(badgeId);
+          newlyUnlockedBadges.push({ id: badgeId, title: badgeTitles[badgeId] });
         }
       };
 
-      checkSpeedBadge(10, 'steady');
-      checkSpeedBadge(20, 'swift');
-      checkSpeedBadge(40, 'velocity');
-      checkSpeedBadge(60, 'virtuoso');
+      // CPM thresholds: 40 CPM ≈ 8 WPM, 60 CPM ≈ 12 WPM, 100 CPM ≈ 20 WPM, 200 CPM ≈ 40 WPM
+      checkSpeedBadge(40, 'steady');
+      checkSpeedBadge(60, 'swift');
+      checkSpeedBadge(100, 'velocity');
+      checkSpeedBadge(200, 'virtuoso');
 
       return {
         ...state,
@@ -196,7 +217,8 @@ function appReducer(state: AppState, action: AppAction): AppState {
           lessonScores: newLessonScores,
           completedLevels: newCompletedLevels,
           badges: newBadges
-        }
+        },
+        newlyUnlockedBadges: [...state.newlyUnlockedBadges, ...newlyUnlockedBadges]
       };
 
     case 'UPDATE_USER_SETTINGS':
@@ -243,6 +265,20 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return {
         ...state,
         learnProgress: action.payload
+      };
+
+    case 'CLEAR_BADGE_CELEBRATION':
+      // Remove the first badge from the queue
+      return {
+        ...state,
+        newlyUnlockedBadges: state.newlyUnlockedBadges.slice(1)
+      };
+
+    case 'REPLAY_BADGE_CELEBRATION':
+      // Add badge to celebration queue for replay
+      return {
+        ...state,
+        newlyUnlockedBadges: [...state.newlyUnlockedBadges, action.payload]
       };
 
     default:

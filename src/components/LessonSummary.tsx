@@ -206,8 +206,8 @@ export default function LessonSummary({
                 <div className="text-sm text-blue-700">Accuracy</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{lessonScore.bestScore.wpm || Math.round(lessonScore.bestScore.cpm / 5)}</div>
-                <div className="text-sm text-blue-700">WPM</div>
+                <div className="text-2xl font-bold text-blue-600">{lessonScore.bestScore.cpm}</div>
+                <div className="text-sm text-blue-700">CPM</div>
               </div>
             </div>
           </div>

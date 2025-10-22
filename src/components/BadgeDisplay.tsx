@@ -10,7 +10,7 @@ interface BadgeDisplayProps {
 }
 
 const badgeIcons = {
-  completionist: { earned: '🏆', unearned: '🎯' },
+  completionist: { earned: '🎓', unearned: '🎯' },
   steady: { earned: '🥉', unearned: '⚡' },
   swift: { earned: '🥈', unearned: '💨' },
   velocity: { earned: '🥇', unearned: '🚀' },
@@ -18,9 +18,22 @@ const badgeIcons = {
 };
 
 export default function BadgeDisplay({ className = '' }: BadgeDisplayProps) {
-  const { state } = useApp();
+  const { state, dispatch } = useApp();
   const userBadges = state.userProgress.badges;
   const [hoveredBadge, setHoveredBadge] = useState<string | null>(null);
+
+  const handleBadgeClick = (badge: Badge & { earned: boolean }) => {
+    if (!badge.earned) return; // Only allow clicking earned badges
+
+    // Replay badge celebration
+    dispatch({
+      type: 'REPLAY_BADGE_CELEBRATION',
+      payload: {
+        id: badge.id,
+        title: badge.title
+      }
+    });
+  };
 
   const badgesWithStatus: (Badge & { earned: boolean })[] = badges.map(badge => ({
     ...badge,
@@ -48,12 +61,13 @@ export default function BadgeDisplay({ className = '' }: BadgeDisplayProps) {
               onMouseLeave={() => setHoveredBadge(null)}
             >
               <div
+                onClick={() => handleBadgeClick(badge)}
                 className={`
                   w-12 h-12 rounded-full flex items-center justify-center text-2xl
-                  transition-all duration-200 cursor-pointer transform hover:scale-110
+                  transition-all duration-200 transform hover:scale-110
                   ${badge.earned
-                    ? 'bg-gradient-to-br from-yellow-300 to-yellow-500 shadow-lg'
-                    : 'bg-gradient-to-br from-gray-200 to-gray-300 grayscale'
+                    ? 'bg-gradient-to-br from-yellow-300 to-yellow-500 shadow-lg cursor-pointer hover:shadow-xl active:scale-95'
+                    : 'bg-gradient-to-br from-gray-200 to-gray-300 grayscale cursor-default'
                   }
                 `}
               >
@@ -67,12 +81,16 @@ export default function BadgeDisplay({ className = '' }: BadgeDisplayProps) {
                     <div className="font-semibold">{badge.title}</div>
                     <div className="text-gray-300 mt-1">
                       {badge.id === 'completionist' && 'Complete all 15 lessons'}
-                      {badge.id === 'steady' && '10+ WPM on all lessons'}
-                      {badge.id === 'swift' && '20+ WPM on all lessons'}
-                      {badge.id === 'velocity' && '40+ WPM on all lessons'}
-                      {badge.id === 'virtuoso' && '60+ WPM on all lessons'}
+                      {badge.id === 'steady' && '40+ CPM on all lessons'}
+                      {badge.id === 'swift' && '60+ CPM on all lessons'}
+                      {badge.id === 'velocity' && '100+ CPM on all lessons'}
+                      {badge.id === 'virtuoso' && '200+ CPM on all lessons'}
                     </div>
-                    {!badge.earned && (
+                    {badge.earned ? (
+                      <div className="text-green-300 text-xs mt-1">
+                        ✨ Click to celebrate again!
+                      </div>
+                    ) : (
                       <div className="text-yellow-300 text-xs mt-1">
                         Keep practicing!
                       </div>

@@ -163,7 +163,7 @@ export default function LevelSelector({ onSelectLesson }: LevelSelectorProps) {
                         <span className="font-medium">Best Score:</span>
                         <span className="ml-2">{score.bestScore.accuracy}% accuracy</span>
                         <span className="ml-2">•</span>
-                        <span className="ml-2">{score.bestScore.wpm || Math.round(score.bestScore.cpm / 5)} WPM</span>
+                        <span className="ml-2">{score.bestScore.cpm} CPM</span>
                       </div>
                     )}
                   </div>
