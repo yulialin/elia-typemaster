@@ -10,11 +10,11 @@ interface BadgeDisplayProps {
 }
 
 const badgeIcons = {
-  completionist: { earned: '🎓', unearned: '🎯' },
-  steady: { earned: '🥉', unearned: '⚡' },
-  swift: { earned: '🥈', unearned: '💨' },
-  velocity: { earned: '🥇', unearned: '🚀' },
-  virtuoso: { earned: '👑', unearned: '⭐' }
+  completionist: { earned: '✓', unearned: '○', symbol: 'DONE' },
+  steady: { earned: '★', unearned: '☆', symbol: 'III' },
+  swift: { earned: '★', unearned: '☆', symbol: 'II' },
+  velocity: { earned: '★', unearned: '☆', symbol: 'I' },
+  virtuoso: { earned: '♔', unearned: '◇', symbol: 'MASTERY' }
 };
 
 export default function BadgeDisplay({ className = '' }: BadgeDisplayProps) {
@@ -88,7 +88,7 @@ export default function BadgeDisplay({ className = '' }: BadgeDisplayProps) {
                     </div>
                     {badge.earned ? (
                       <div className="text-green-300 text-xs mt-1">
-                        ✨ Click to celebrate again!
+                        ★ Click to celebrate again!
                       </div>
                     ) : (
                       <div className="text-yellow-300 text-xs mt-1">

@@ -3,9 +3,14 @@
   src: url('/fonts/NewA-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
+  /* Ensure font loads before text is displayed */
 }
 
 .elia-font {
   font-family: 'ELIA', monospace;
+  /* Fallback to ensure ELIA characters don't show as regular letters */
+  font-feature-settings: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

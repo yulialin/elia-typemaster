@@ -9,11 +9,19 @@ interface BadgeCelebrationProps {
 }
 
 const badgeIcons = {
-  completionist: '🎓',
-  steady: '🥉',
-  swift: '🥈',
-  velocity: '🥇',
-  virtuoso: '👑'
+  completionist: '✓',
+  steady: '★',
+  swift: '★',
+  velocity: '★',
+  virtuoso: '♔'
+};
+
+const badgeColors = {
+  completionist: 'text-green-600',
+  steady: 'text-amber-700',
+  swift: 'text-gray-400',
+  velocity: 'text-yellow-500',
+  virtuoso: 'text-purple-600'
 };
 
 export default function BadgeCelebration({ badgeId, badgeTitle, onComplete }: BadgeCelebrationProps) {
@@ -79,7 +87,7 @@ export default function BadgeCelebration({ badgeId, badgeTitle, onComplete }: Ba
           {/* Badge icon with glow effect */}
           <div className="relative inline-block mb-4">
             <div className="absolute inset-0 bg-yellow-400 rounded-full blur-xl opacity-60 animate-pulse" />
-            <div className="relative text-8xl animate-bounce-slow">
+            <div className={`relative text-8xl animate-bounce-slow ${badgeColors[badgeId as keyof typeof badgeColors]}`}>
               {icon}
             </div>
           </div>
@@ -92,11 +100,11 @@ export default function BadgeCelebration({ badgeId, badgeTitle, onComplete }: Ba
             {badgeTitle}
           </p>
 
-          {/* Sparkle effects */}
-          <div className="flex justify-center space-x-2 text-2xl animate-fade-in-delay-2">
-            <span className="animate-ping-slow">✨</span>
-            <span className="animate-ping-slow" style={{ animationDelay: '0.2s' }}>⭐</span>
-            <span className="animate-ping-slow" style={{ animationDelay: '0.4s' }}>✨</span>
+          {/* Star effects */}
+          <div className="flex justify-center space-x-2 text-2xl animate-fade-in-delay-2 text-yellow-500">
+            <span className="animate-ping-slow">★</span>
+            <span className="animate-ping-slow" style={{ animationDelay: '0.2s' }}>★</span>
+            <span className="animate-ping-slow" style={{ animationDelay: '0.4s' }}>★</span>
           </div>
         </div>
       </div>
