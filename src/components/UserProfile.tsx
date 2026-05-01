@@ -13,7 +13,8 @@ export default function UserProfile() {
     try {
       await signOut()
       setShowDropdown(false)
-    } catch (error) {
+    } catch {
+      // silent
     }
   }
 
@@ -22,14 +23,11 @@ export default function UserProfile() {
       <>
         <button
           onClick={() => setShowAuthModal(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          className="border border-zinc-300 text-zinc-700 px-3 py-1.5 text-xs hover:border-zinc-900 hover:text-zinc-900 transition-colors"
         >
-          Sign In
+          Sign in
         </button>
-        <AuthModal
-          isOpen={showAuthModal}
-          onClose={() => setShowAuthModal(false)}
-        />
+        <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
       </>
     )
   }
@@ -38,44 +36,38 @@ export default function UserProfile() {
     <div className="relative">
       <button
         onClick={() => setShowDropdown(!showDropdown)}
-        className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 transition-colors"
+        className="flex items-center gap-2 text-xs text-zinc-600 hover:text-zinc-900 transition-colors"
       >
-        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-          {user.email?.[0]?.toUpperCase() || 'U'}
-        </div>
-        <span className="text-sm font-medium text-gray-700 hidden sm:block">
-          {user.email}
+        <span className="w-6 h-6 border border-zinc-300 flex items-center justify-center font-mono font-medium text-xs flex-shrink-0">
+          {user.email?.[0]?.toUpperCase() ?? 'U'}
         </span>
-        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <span className="hidden sm:block truncate max-w-32">{user.email}</span>
+        <svg className="w-3 h-3 text-zinc-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
       {showDropdown && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-          <div className="p-3 border-b border-gray-100">
-            <p className="text-sm font-medium text-gray-900">{user.email}</p>
-            <p className="text-xs text-gray-500">
-              Member since {new Date(user.created_at).toLocaleDateString()}
+        <div className="absolute right-0 mt-1 w-52 bg-white border border-zinc-200 z-10">
+          <div className="px-3 py-2.5 border-b border-zinc-100">
+            <p className="text-xs font-medium text-zinc-900 truncate">{user.email}</p>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Since {new Date(user.created_at).toLocaleDateString()}
             </p>
           </div>
           <div className="p-1">
             <button
               onClick={handleSignOut}
-              className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+              className="w-full text-left px-3 py-1.5 text-xs text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 transition-colors"
             >
-              Sign Out
+              Sign out
             </button>
           </div>
         </div>
       )}
 
-      {/* Click outside to close dropdown */}
       {showDropdown && (
-        <div
-          className="fixed inset-0 z-0"
-          onClick={() => setShowDropdown(false)}
-        />
+        <div className="fixed inset-0 z-0" onClick={() => setShowDropdown(false)} />
       )}
     </div>
   )

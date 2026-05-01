@@ -19,9 +19,7 @@ export default function UserSettings({ onClose }: UserSettingsProps) {
   const handleSave = () => {
     dispatch({
       type: 'UPDATE_USER_SETTINGS',
-      payload: {
-        customAccuracyThreshold: customAccuracy
-      }
+      payload: { customAccuracyThreshold: customAccuracy },
     });
     onClose();
   };
@@ -31,96 +29,90 @@ export default function UserSettings({ onClose }: UserSettingsProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center p-4 z-50">
+      <div className="bg-white border border-zinc-200 p-6 max-w-md w-full">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Settings</h2>
+          <h2 className="text-base font-semibold text-zinc-900">Settings</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl"
+            className="text-zinc-400 hover:text-zinc-900 transition-colors text-xl leading-none"
           >
             ×
           </button>
         </div>
 
         <div className="space-y-6">
-          {/* Custom Accuracy Threshold */}
+          {/* Accuracy goal */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Personal Accuracy Goal
+            <label className="block text-xs font-medium text-zinc-700 mb-1">
+              Personal accuracy goal
             </label>
-            <p className="text-sm text-gray-600 mb-3">
-              Set a higher accuracy target for passing quizzes. The default minimum is {PERFORMANCE_CRITERIA.DEFAULT_ACCURACY_THRESHOLD}%,
-              but you can challenge yourself with a higher standard.
+            <p className="text-xs text-zinc-500 mb-3">
+              Default minimum is {PERFORMANCE_CRITERIA.DEFAULT_ACCURACY_THRESHOLD}%. Raise it to challenge yourself.
             </p>
-
-            <div className="space-y-2">
-              <input
-                type="range"
-                min={PERFORMANCE_CRITERIA.DEFAULT_ACCURACY_THRESHOLD}
-                max="100"
-                step="1"
-                value={customAccuracy}
-                onChange={(e) => setCustomAccuracy(parseInt(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              />
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>{PERFORMANCE_CRITERIA.DEFAULT_ACCURACY_THRESHOLD}% (Default)</span>
-                <span className="font-semibold text-blue-600">{customAccuracy}%</span>
-                <span>100% (Perfect)</span>
-              </div>
+            <input
+              type="range"
+              min={PERFORMANCE_CRITERIA.DEFAULT_ACCURACY_THRESHOLD}
+              max="100"
+              step="1"
+              value={customAccuracy}
+              onChange={(e) => setCustomAccuracy(parseInt(e.target.value))}
+              className="w-full h-px bg-zinc-200 appearance-none cursor-pointer accent-zinc-900"
+            />
+            <div className="flex justify-between text-xs text-zinc-400 mt-1.5">
+              <span>{PERFORMANCE_CRITERIA.DEFAULT_ACCURACY_THRESHOLD}% (default)</span>
+              <span className="font-mono font-medium text-zinc-900">{customAccuracy}%</span>
+              <span>100%</span>
             </div>
-
-            {customAccuracy > PERFORMANCE_CRITERIA.DEFAULT_ACCURACY_THRESHOLD && (
-              <p className="text-sm text-blue-600 mt-2">
-                Great choice! You&apos;re setting a higher standard for yourself.
-              </p>
-            )}
           </div>
 
-          {/* Speed Requirement Info */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="font-medium text-gray-700 mb-2">Speed Requirement</h4>
-            <p className="text-sm text-gray-600">
-              The minimum typing speed of {PERFORMANCE_CRITERIA.MIN_CPM_THRESHOLD} characters per minute (CPM)
-              cannot be changed and applies to all quizzes.
+          {/* Speed note */}
+          <div className="border border-zinc-100 p-4">
+            <h4 className="text-xs font-medium text-zinc-700 mb-1">Speed requirement</h4>
+            <p className="text-xs text-zinc-500">
+              Minimum {PERFORMANCE_CRITERIA.MIN_CPM_THRESHOLD} CPM applies to all quizzes and cannot be changed.
             </p>
           </div>
 
-          {/* Current Progress Summary */}
-          <div className="bg-blue-50 rounded-lg p-4">
-            <h4 className="font-medium text-blue-700 mb-2">Your Progress</h4>
-            <div className="grid grid-cols-2 gap-4 text-sm">
+          {/* Stats */}
+          <div className="border border-zinc-100 p-4">
+            <h4 className="text-xs font-medium text-zinc-700 mb-3">Your progress</h4>
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <span className="text-blue-600">Completed Lessons:</span>
-                <div className="font-black text-gray-900 text-2xl">{state.userProgress.completedLevels.length}/15</div>
+                <div className="font-mono text-xl font-semibold text-zinc-900">
+                  {state.userProgress.completedLevels.length}
+                  <span className="text-zinc-300 font-normal">/15</span>
+                </div>
+                <div className="text-xs text-zinc-400 mt-0.5">lessons completed</div>
               </div>
               <div>
-                <span className="text-blue-600">Badges Earned:</span>
-                <div className="font-black text-gray-900 text-2xl">{state.userProgress.badges.length}/5</div>
+                <div className="font-mono text-xl font-semibold text-zinc-900">
+                  {state.userProgress.badges.length}
+                  <span className="text-zinc-300 font-normal">/5</span>
+                </div>
+                <div className="text-xs text-zinc-400 mt-0.5">badges earned</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-between mt-6">
+        <div className="flex justify-between items-center mt-6 pt-4 border-t border-zinc-100">
           <button
             onClick={handleReset}
-            className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+            className="text-xs text-zinc-400 hover:text-zinc-900 transition-colors"
           >
-            Reset to Default
+            Reset to default
           </button>
-          <div className="space-x-2">
+          <div className="flex gap-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+              className="px-4 py-1.5 border border-zinc-200 text-xs text-zinc-600 hover:border-zinc-400 transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="px-4 py-1.5 border border-zinc-900 bg-zinc-900 text-white text-xs hover:bg-white hover:text-zinc-900 transition-colors"
             >
               Save
             </button>

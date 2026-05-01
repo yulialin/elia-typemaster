@@ -16,7 +16,6 @@ function LearnPageContent() {
   const [pageTransition, setPageTransition] = useState<'none' | 'next' | 'prev'>('none');
   const [mounted, setMounted] = useState(false);
 
-  // Prevent hydration errors by only rendering progress after mount
   React.useEffect(() => {
     setMounted(true);
   }, []);
@@ -63,68 +62,42 @@ function LearnPageContent() {
   return (
     <div className="learn-page relative">
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-white border-b shadow-sm">
+      <header className="sticky top-0 z-20 bg-white border-b border-zinc-200">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/" className="text-blue-600 hover:text-blue-700 font-semibold">
+            <Link href="/" className="text-xs text-zinc-500 hover:text-zinc-900 transition-colors">
               ← Home
             </Link>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 border-l border-zinc-200 pl-4">
               <Logo size="small" className="opacity-80" />
-              <h1 className="text-xl font-bold text-gray-900">ELIA Learn</h1>
+              <h1 className="text-sm font-semibold text-zinc-900">ELIA Learn</h1>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            {/* Progress Ring - Compact version in header */}
+
+          <div className="flex items-center gap-3">
             {mounted && (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="relative w-8 h-8">
-                  <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 100 100">
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      stroke="#e5e7eb"
-                      strokeWidth="12"
-                      fill="none"
-                    />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      stroke="#3b82f6"
-                      strokeWidth="12"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeDasharray={`${(progress.completedChapters.length / chapters.length) * 251} 251`}
-                      className="transition-all duration-500 ease-out"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-[10px] font-bold text-gray-800">
-                      {progress.completedChapters.length}/{chapters.length}
-                    </div>
-                  </div>
-                </div>
-                <span className="text-xs font-medium text-gray-700 hidden sm:inline">Progress</span>
-              </div>
+              <span className="text-xs font-mono text-zinc-400">
+                {progress.completedChapters.length}/{chapters.length}
+              </span>
             )}
+
             <a
               href="/ELIA learning manual.pdf"
               download
-              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2"
+              className="border border-zinc-300 text-zinc-600 px-3 py-1.5 text-xs hover:border-zinc-900 hover:text-zinc-900 transition-colors flex items-center gap-1.5"
               title="Download printable practice manual"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               <span className="hidden sm:inline">Manual</span>
             </a>
+
             <button
               onClick={() => setShowTOC(!showTOC)}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              className="border border-zinc-300 text-zinc-600 px-3 py-1.5 text-xs hover:border-zinc-900 hover:text-zinc-900 transition-colors"
             >
-              📖 Contents
+              Contents
             </button>
           </div>
         </div>
@@ -133,7 +106,7 @@ function LearnPageContent() {
       {/* Table of Contents Modal */}
       {showTOC && (
         <div
-          className="fixed inset-0 z-30 bg-black bg-opacity-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-30 bg-black bg-opacity-40 flex items-center justify-center p-4"
           onClick={() => setShowTOC(false)}
         >
           <div onClick={(e) => e.stopPropagation()}>
@@ -146,13 +119,12 @@ function LearnPageContent() {
         </div>
       )}
 
-      {/* Main Content with Page Transition */}
+      {/* Main Content */}
       <div
         className={`page-content transition-opacity duration-300 ${
           pageTransition !== 'none' ? 'opacity-0' : 'opacity-100'
         }`}
       >
-        {/* Use StructuredBookLayout for chapters with structured exercises */}
         {currentChapter.structuredExercises ? (
           <StructuredBookLayout
             chapter={currentChapter}

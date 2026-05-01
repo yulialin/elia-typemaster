@@ -14,189 +14,153 @@ interface LevelSelectorProps {
   onSelectLesson: (lessonId: number) => void;
 }
 
+function GearIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  );
+}
+
 export default function LevelSelector({ onSelectLesson }: LevelSelectorProps) {
   const { state } = useApp();
   const { userProgress, isDataLoading } = state;
   const { user } = useAuth();
   const [showSettings, setShowSettings] = React.useState(false);
 
-  const isLessonCompleted = (lessonId: number) => {
-    return userProgress.completedLevels.includes(lessonId);
-  };
+  const isLessonCompleted = (lessonId: number) =>
+    userProgress.completedLevels.includes(lessonId);
 
-  const getLessonScore = (lessonId: number) => {
-    return userProgress.lessonScores[lessonId];
-  };
+  const getLessonScore = (lessonId: number) =>
+    userProgress.lessonScores[lessonId];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 relative">
-          {/* Top bar with logo and user controls */}
-          <div className="flex justify-between items-start mb-6">
-            <Logo size="large" />
-            <div className="flex items-center space-x-3">
-              <UserProfile />
-              <button
-                onClick={() => setShowSettings(true)}
-                className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg"
-                title="Settings"
-              >
-                ⚙️
-              </button>
-            </div>
-          </div>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-3xl mx-auto px-6 py-10">
 
-          {/* Main title section */}
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">
-              ELIA TypeMaster
-            </h1>
-            <p className="text-lg text-gray-600 mb-2">
-              Interactive Touch-Typing for ELIA Frames™ alphabet
+        {/* Header */}
+        <div className="flex items-start justify-between border-b border-zinc-200 pb-6 mb-8">
+          <div>
+            <Logo size="medium" />
+            <p className="text-sm text-zinc-500 mt-2">
+              Touch-typing practice for the ELIA Frames™ alphabet
             </p>
             {user && (
-              <p className="text-sm text-blue-600 mb-2">
-                Welcome back! Your progress is automatically saved.
-              </p>
+              <p className="text-xs text-zinc-400 mt-1">Progress saved automatically</p>
             )}
             {!user && (
-              <p className="text-sm text-orange-600 mb-2">
-                Sign in to save your progress across devices
-              </p>
+              <p className="text-xs text-zinc-400 mt-1">Sign in to save progress across devices</p>
             )}
+          </div>
+          <div className="flex items-center gap-2">
+            <UserProfile />
+            <button
+              onClick={() => setShowSettings(true)}
+              className="p-2 text-zinc-400 hover:text-zinc-900 transition-colors"
+              title="Settings"
+            >
+              <GearIcon />
+            </button>
           </div>
         </div>
 
-        {/* Loading State */}
+        {/* Loading */}
         {isDataLoading && user && (
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center space-x-2 text-blue-600">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-              <span>Loading your progress...</span>
-            </div>
-          </div>
+          <p className="text-sm text-zinc-400 mb-6">Loading progress...</p>
         )}
 
-        {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-          <div className="lg:col-span-3 order-1">
+        {/* Dashboard */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8">
+          <div className="lg:col-span-3">
             <ProgressTracker />
           </div>
-          <div className="lg:col-span-1 order-2">
+          <div className="lg:col-span-1">
             <BadgeDisplay />
           </div>
         </div>
 
-        {/* ELIA Learn Card */}
+        {/* ELIA Learn */}
         <div className="mb-8">
           <a
             href="/learn"
-            className="block bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg p-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
+            className="block border border-zinc-200 hover:border-zinc-900 p-5 transition-colors group"
           >
-            <div className="flex items-center justify-between text-white">
+            <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-3xl font-bold mb-2">📚 ELIA Learn</h2>
-                <p className="text-lg opacity-90">
-                  New to ELIA? Start here! Interactive guide to learning the ELIA alphabet.
-                </p>
-                <p className="text-sm mt-2 opacity-80">
-                  Learn characters step-by-step with exercises and instant feedback
+                <h2 className="text-sm font-semibold text-zinc-900 mb-1">ELIA Learn</h2>
+                <p className="text-xs text-zinc-500">
+                  New to ELIA? Start with the interactive guide to learn the alphabet step by step.
                 </p>
               </div>
-              <div className="text-6xl">→</div>
+              <span className="text-zinc-300 group-hover:text-zinc-900 transition-colors ml-6 text-lg">→</span>
             </div>
           </a>
         </div>
 
         {/* Lessons */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+        <div className="mb-10">
+          <h2 className="text-xs font-medium text-zinc-400 uppercase tracking-widest mb-4">
             Typing Lessons
           </h2>
-          <div className="grid gap-4">
+          <div className="divide-y divide-zinc-100">
             {lessons.map((lesson) => {
               const score = getLessonScore(lesson.id);
               const lessonCompleted = isLessonCompleted(lesson.id);
 
               return (
-                <div
-                  key={lesson.id}
-                  className={`bg-white rounded-lg p-6 shadow-sm border-2 transition-all hover:shadow-md ${
-                    lessonCompleted
-                      ? 'border-green-500 bg-green-50'
-                      : 'border-gray-200'
-                  }`}
-                >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center mb-2">
-                      <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mr-3 ${
-                        lessonCompleted
-                          ? 'bg-green-500 text-white'
-                          : 'bg-blue-500 text-white'
-                      }`}>
-                        {lessonCompleted ? '✓' : lesson.id}
+                <div key={lesson.id} className="py-4 flex items-start justify-between gap-6">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-3 mb-1">
+                      <span className="font-mono text-xs text-zinc-300 flex-shrink-0 w-5">
+                        {String(lesson.id).padStart(2, '0')}
                       </span>
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        Lesson {lesson.id}: {lesson.name}
+                      <h3 className="text-sm font-medium text-zinc-900">
+                        {lesson.name}
+                        {lessonCompleted && (
+                          <span className="ml-2 text-xs font-normal text-zinc-400">✓</span>
+                        )}
                       </h3>
                     </div>
-                    <p className="text-gray-600 mb-2">{lesson.description}</p>
-
-                    {/* Characters */}
-                    <div className="flex flex-wrap gap-2 mb-3">
+                    <p className="text-xs text-zinc-500 mb-2 ml-8">{lesson.description}</p>
+                    <div className="flex flex-wrap gap-1 ml-8">
                       {lesson.characters.map((char) => (
                         <span
                           key={char}
-                          className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm elia-font"
+                          className="border border-zinc-200 text-zinc-600 px-1.5 py-0.5 text-xs elia-font"
                         >
                           {char}
                         </span>
                       ))}
                     </div>
-
-                    {/* Best Score Display */}
                     {score?.bestScore && (
-                      <div className="text-sm text-gray-600">
-                        <span className="font-medium">Best Score:</span>
-                        <span className="ml-2">{score.bestScore.accuracy}% accuracy</span>
-                        <span className="ml-2">•</span>
-                        <span className="ml-2">{score.bestScore.cpm} CPM</span>
-                      </div>
+                      <p className="text-xs text-zinc-400 font-mono mt-1.5 ml-8">
+                        Best: {score.bestScore.accuracy}% · {score.bestScore.cpm} CPM
+                      </p>
                     )}
                   </div>
-                  <div className="ml-4">
-                    <button
-                      onClick={() => onSelectLesson(lesson.id)}
-                      className="px-6 py-2 rounded-lg font-medium transition-colors bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      {lessonCompleted ? 'Practice Again' : 'Start Lesson'}
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => onSelectLesson(lesson.id)}
+                    className="flex-shrink-0 border border-zinc-300 text-zinc-700 px-4 py-1.5 text-xs hover:border-zinc-900 hover:text-zinc-900 transition-colors mt-0.5"
+                  >
+                    {lessonCompleted ? 'Practice' : 'Start'}
+                  </button>
                 </div>
-              </div>
               );
             })}
           </div>
         </div>
 
-        {/* User Control Message */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
-          <h3 className="text-lg font-semibold text-blue-800 mb-2">Freedom & Flexibility</h3>
-          <p className="text-blue-700">
-            Choose any lesson in any order. Practice untimed modules to build confidence,
-            then take the timed quiz when you&apos;re ready. You decide when to move on!
-          </p>
-        </div>
-
-        {/* Settings Modal */}
-        {showSettings && (
-          <UserSettings onClose={() => setShowSettings(false)} />
-        )}
+        {/* Footer note */}
+        <p className="text-xs text-zinc-400 border-t border-zinc-100 pt-6 text-center">
+          Practice any lesson in any order. Take the timed quiz when you&apos;re ready.
+        </p>
 
       </div>
+
+      {showSettings && (
+        <UserSettings onClose={() => setShowSettings(false)} />
+      )}
     </div>
   );
 }

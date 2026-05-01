@@ -46,7 +46,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           alert('Check your email for the confirmation link!')
         }
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred')
     }
 
@@ -68,15 +68,15 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+      <div className="bg-white border border-zinc-200 p-8 max-w-sm w-full mx-4">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">
-            {isLogin ? 'Sign In' : 'Create Account'}
+          <h2 className="text-base font-semibold text-zinc-900">
+            {isLogin ? 'Sign in' : 'Create account'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl"
+            className="text-zinc-400 hover:text-zinc-900 transition-colors text-xl leading-none"
           >
             ×
           </button>
@@ -84,7 +84,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="block text-xs font-medium text-zinc-600 mb-1">
               Email
             </label>
             <input
@@ -93,13 +93,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your email"
+              className="w-full px-3 py-2 border border-zinc-200 text-sm text-zinc-900 focus:outline-none focus:border-zinc-900 transition-colors"
+              placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-xs font-medium text-zinc-600 mb-1">
               Password
             </label>
             <input
@@ -109,15 +109,15 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your password"
+              className="w-full px-3 py-2 border border-zinc-200 text-sm text-zinc-900 focus:outline-none focus:border-zinc-900 transition-colors"
+              placeholder="••••••"
             />
           </div>
 
           {!isLogin && (
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm Password
+              <label htmlFor="confirmPassword" className="block text-xs font-medium text-zinc-600 mb-1">
+                Confirm password
               </label>
               <input
                 type="password"
@@ -126,48 +126,36 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Confirm your password"
+                className="w-full px-3 py-2 border border-zinc-200 text-sm text-zinc-900 focus:outline-none focus:border-zinc-900 transition-colors"
+                placeholder="••••••"
               />
             </div>
           )}
 
           {error && (
-            <div className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg p-3">
-              {error}
-            </div>
+            <p className="text-xs text-zinc-900 border border-zinc-300 px-3 py-2">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed font-medium"
+            className="w-full border border-zinc-900 bg-zinc-900 text-white py-2 text-sm font-medium hover:bg-white hover:text-zinc-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Create Account')}
+            {loading ? 'Loading...' : (isLogin ? 'Sign in' : 'Create account')}
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            {isLogin ? "Don't have an account? " : "Already have an account? "}
+        <div className="mt-4 text-center">
+          <p className="text-xs text-zinc-500">
+            {isLogin ? "No account? " : "Already have one? "}
             <button
               onClick={switchMode}
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-zinc-900 font-medium hover:underline"
             >
-              {isLogin ? 'Sign Up' : 'Sign In'}
+              {isLogin ? 'Sign up' : 'Sign in'}
             </button>
           </p>
         </div>
-
-        {isLogin && (
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800">
-              <strong>Demo Account:</strong><br />
-              Email: demo@example.com<br />
-              Password: demo123
-            </p>
-          </div>
-        )}
       </div>
     </div>
   )
