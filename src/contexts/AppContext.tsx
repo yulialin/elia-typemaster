@@ -367,7 +367,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const result = await saveUserProgress(user.id, state.userProgress, state.learnProgress);
           console.log('✅ [AppContext] Save successful:', result);
         } catch {
-          console.error('❌ [AppContext] Error saving progress:', error);
+          console.error('❌ [AppContext] Error saving progress.');
         }
       }
     };
