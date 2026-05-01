@@ -61,10 +61,6 @@ export default function StructuredBookLayout({
     }
   }, [currentStage, chapter.id, displayedChapterId, hasStructuredExercises, updateExerciseStage]);
 
-  const handleStartPractice = () => {
-    setCurrentStage('flashcards');
-    setViewMode('practice');
-  };
 
   const handleFlashcardsComplete = () => {
     markStageComplete(chapter.id, 'flashcards');

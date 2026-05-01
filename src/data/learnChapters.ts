@@ -1,4 +1,3 @@
-import { Chapter, ChapterExercise } from '@/types/learn';
 
 export const chapters: Chapter[] = [
   {

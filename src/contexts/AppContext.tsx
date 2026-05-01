@@ -342,7 +342,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             // New user - use initial state
             dispatch({ type: 'SET_LOADING', payload: false });
           }
-        } catch (error) {
+        } catch {
           dispatch({ type: 'SET_LOADING', payload: false });
         }
       } else if (!user && !authLoading) {
@@ -366,7 +366,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         try {
           const result = await saveUserProgress(user.id, state.userProgress, state.learnProgress);
           console.log('✅ [AppContext] Save successful:', result);
-        } catch (error) {
+        } catch {
           console.error('❌ [AppContext] Error saving progress:', error);
         }
       }
