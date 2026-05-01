@@ -1,3 +1,4 @@
+import { Chapter } from "@/types/types";
 
 export const chapters: Chapter[] = [
   {
