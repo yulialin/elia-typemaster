@@ -72,30 +72,26 @@ export default function LevelSelector({ onSelectLesson }: LevelSelectorProps) {
 
         {/* Dashboard */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8">
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 flex flex-col gap-4">
             <ProgressTracker />
+            <a
+              href="/learn"
+              className="block border border-zinc-200 hover:border-zinc-900 p-5 transition-colors group"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-sm font-semibold text-zinc-900 mb-1">ELIA Learn</h2>
+                  <p className="text-xs text-zinc-500">
+                    New to ELIA? Start with the interactive guide to learn the alphabet step by step.
+                  </p>
+                </div>
+                <span className="text-zinc-300 group-hover:text-zinc-900 transition-colors ml-6 text-lg">→</span>
+              </div>
+            </a>
           </div>
           <div className="lg:col-span-1">
             <BadgeDisplay />
           </div>
-        </div>
-
-        {/* ELIA Learn */}
-        <div className="mb-8">
-          <a
-            href="/learn"
-            className="block border border-zinc-200 hover:border-zinc-900 p-5 transition-colors group"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-semibold text-zinc-900 mb-1">ELIA Learn</h2>
-                <p className="text-xs text-zinc-500">
-                  New to ELIA? Start with the interactive guide to learn the alphabet step by step.
-                </p>
-              </div>
-              <span className="text-zinc-300 group-hover:text-zinc-900 transition-colors ml-6 text-lg">→</span>
-            </div>
-          </a>
         </div>
 
         {/* Lessons */}
