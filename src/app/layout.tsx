@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 const eliaFont = localFont({
-  src: "../../public/fonts/NewA-Regular.ttf",
+  src: "../../public/fonts/NewA-Regular.woff2",
   variable: "--font-elia",
   display: "block",
 });
