@@ -1,5 +1,14 @@
+@font-face {
+  font-family: 'ELIA';
+  src: url('/fonts/NewA-Regular.woff2') format('woff2'),
+       url('/fonts/NewA-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
 .elia-font {
-  font-family: var(--font-elia), monospace;
+  font-family: 'ELIA', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from '@/components/Providers';
 
@@ -12,12 +11,6 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
-
-const eliaFont = localFont({
-  src: "../../public/fonts/NewA-Regular.woff2",
-  variable: "--font-elia",
-  display: "block",
 });
 
 export const metadata: Metadata = {
@@ -32,8 +25,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/NewA-Regular.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${eliaFont.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
           {children}
